@@ -505,8 +505,8 @@ class AppFixtures extends Fixture
         }
         
 
-        /*$mailChimp = new MailChimp('73484659907bcc82f2a5075658280960-us10');
-        $list_id = '9e1618bc4a';
+        /*$mailChimp = new MailChimp('');
+        $list_id = '';
         $batch = $mailChimp->new_batch();
         
         for ($i = 1;$i <= 50; $i++) {
