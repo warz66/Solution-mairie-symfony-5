@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{rubrique.title}} | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.publication.rubrique') }}
+{% endblock %}
+
+{% block body %}
+    {#{% set colorSet = ['#FF5722', '#3E2723', '#C41C00', '#FFAB40', '#775447', '#FF5722', '#3E2723', '#C41C00', '#FFAB40', '#775447'] %}#}
+
+    <div class="container-fluid container-xl" id="headerRubrique">
+        <div>
+            {% if 'picsum' in rubrique.coverImage %}
+                <img src="{{rubrique.coverImage}}" alt="{{rubrique.title}}">
+            {% else %}
+                <img src="{{(publication_cover_path ~ rubrique.coverImage) | imagine_filter('publication_title_edit')}}" alt="{{rubrique.title}}">
+            {% endif %}
+        </div>
+        <div id="headerRubriqueText">
+            <div>
+                {{rubrique.title}}
+            </div>
+            <div>
+                {{rubrique.introduction}}
+            </div>     
+        </div>
+    </div>
+    <div id="marginHeaderRubrique" class="mb-5"></div>
+
+    <div class="container-fluid container-xl" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                {% for lien in filAriane  %}
+                    {% if loop.last %}
+                        <li class="breadcrumb-item active">{{lien.title}}</li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a href="{{ path( 'publication_router', {'slug' : lien.slug} ) }}">{{lien.title}}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {#{% if rubrique.parent is not null %}
+                    <li class="breadcrumb-item"><a href="{{ path( 'publication_router', {'slug' : rubrique.parent.slug} ) }}">{{rubrique.parent.title}}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active">{{rubrique.title}}</li>#}
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container-fluid container-xl" id="childsRubrique">
+        <div class="row">
+            {% for key, publication in publications %}
+                <div class="col-lg-4 col-sm-6 mb-5">
+                    <a href="{{ path( 'publication_router', {'slug' : publication.slug} ) }}">
+                        <div class="card h-100">
+                            {% if 'picsum' in publication.coverImage %} {# à virer une fois en prod #}
+                                <img src="{{publication.coverImage}}" alt="{{publication.title}}" class="card-img-top">
+                            {% else %}
+                                <img src="{{(publication_cover_path ~ publication.coverImage) | imagine_filter('publication_thumb')}}" alt="{{publication.title}}" class="card-img-top">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title"> {# style="color:{{colorSet[key]}}" #}
+                                    {{publication.title}}
+                                </h5>
+                                <p class="card-text">
+                                    {{publication.introduction}}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if liensUtiles is not empty or rubrique.ressources.count or rubrique.infosPratiques is not null %}
+        <div id="extraInfos">
+            <span class="arrow-down" id="arrow-down-top"></span>
+            {% if enLien is not empty %}<span class="arrow-down" id="arrow-down-bottom"></span>{% endif %}
+            <div class="container-fluid container-xl pt-4 pb-3">
+                <div class="row justify-content-center">
+                    {% if liensUtiles is not empty %}
+                        <div class="col-lg-4 col-sm-6 py-3">
+                            <p class="h5"><i class="fas fa-link"></i>&nbsp;LIENS UTILES</p>
+                            <ul>
+                            {% for lienUtile in liensUtiles %}
+                                <li><a href="{{lienUtile.url}}">{{lienUtile.title}}</a></li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    {% if rubrique.ressources.count %}
+                        <div class="col-lg-4 col-sm-6 py-3">
+                            <p class="h5"><i class="far fa-file-pdf"></i>&nbsp;RESSOURCES</p>
+                            <ul>
+                            {% for ressource in rubrique.ressources %}
+                                {% if 'http://' in ressource.url  or 'https://' in ressource.url %} {# à virer #}
+                                    <li><a href="{{ ressource.url }}" target="_blank">{{ressource.title}}</a></li>
+                                {% else %}
+                                    {% set urlFileRessource = ressources_path ~ ressource.url %}
+                                    <li><a href="{{ urlFileRessource }}" target="_blank">{{ressource.title}}&nbsp;{{ urlFileRessource | filesize }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    {% if rubrique.infosPratiques is not null %}
+                            <div class="col-lg-4 col-sm-6 py-3">
+                                <p class="h5"><i class="fas fa-info-circle"></i>&nbsp;INFOS PRATIQUES</p>
+                                {{rubrique.infosPratiques | raw}}
+                            </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    {% if enLien is not empty %}
+        <div id="enLien">
+            <div class="container-fluid container-xl pt-4">
+                <h4 class="pt-3">En ce moment...</h4>
+                <div class="row pt-3">
+                    {% for key, publication in enLien  %}
+                        {% if publication.category.nom == 'actualite'  %}
+                            <div class="col-sm-6 col-lg-4 actualite">
+                                <a href="{{ path('publication_router', {'slug' : publication.slug}) }}">
+                                    <div class="card h-100">
+                                        {% if 'picsum' in publication.coverImage %} {# à virer une fois en prod #}
+                                            <img src="{{publication.coverImage}}" alt="{{publication.title}}" class="card-img-top">
+                                        {% else %}
+                                            <img src="{{(publication_cover_path ~ publication.coverImage) | imagine_filter('publication_thumb')}}" alt="{{publication.title}}" class="card-img-top">
+                                        {% endif %}
+                                        <div class="categoryActualite">
+                                            <span {% if colorItemsActualiteCategory[publication.actualite.category] is defined %} style="color: {{colorItemsActualiteCategory[publication.actualite.category]}};" {% endif %}>{{publication.actualite.category}}</span>
+                                        </div>
+                                        <span class="card-text py-1"><i>Publié le {{publication.actualite.debutPublication|date('d/m/y')}}</i></span>
+                                        <div class="card-body p-1">
+                                            <h5 class="card-title">{{publication.title}}</h5>
+                                            <p class="card-text">{{publication.introduction}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endif %}
+                        {% if publication.category.nom == 'evenement' %}
+                            <div class="col-sm-6 col-lg-4 evenement">
+                                <a href="{{ path('publication_router', {'slug' : publication.slug}) }}">
+                                    <div class="card h-100">
+                                        {% if 'picsum' in publication.coverImage %} {# à virer une fois en prod #}
+                                            <img src="{{publication.coverImage}}" alt="{{publication.title}}" class="card-img-top">
+                                        {% else %}
+                                            <img src="{{(publication_cover_path ~ publication.coverImage) | imagine_filter('publication_thumb')}}" alt="{{publication.title}}" class="card-img-top">
+                                        {% endif %}
+                                        <div class="categoryEvenement">
+                                            <span {% if colorItemsEvenementCategory[publication.evenement.category] is defined %} style="color: {{colorItemsEvenementCategory[publication.evenement.category]}};" {% endif %}>{{publication.evenement.category}}</span>
+                                        </div>
+                                        {% if publication.evenement.statut == 1 %}<span class="evenementAnnule"> Attention, Evénement Annulé ! </span> {% endif %}
+                                        <div class="card-body p-1">
+                                            <h5 class="card-title">{{publication.title}}</h5>
+                                            <p class="card-text"><i>{{publication.evenement.subtitle}}</i></p>
+                                            <p class="card-text">{{publication.introduction}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div id="moreActuEvent">
+                    <a href="{{path('actualites')}}">Voir toutes l'actualités</a>
+                    <a href="{{path('evenements')}}">Voir tous les évènements</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <hr 
+        {% if (liensUtiles is not empty or rubrique.ressources.count or rubrique.infosPratiques is not null) and (enLien is empty) %}
+            style="display:none;"    
+        {% endif %}
+    >
+
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

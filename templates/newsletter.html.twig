@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Newsletter | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid container-xl mt-5" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item active">Newsletter</li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container-fluid container-xl mb-4">
+       <h4 class="font-weight-bold">Newsletters de la ville de {{nom_mairie}}</h4>
+        <p>Pour recevoir régulièrement des informations (actualités, évènements, sport, loisirs, culture, seniors, démarches ...) et en savoir d'avantage sur la vie au sein de notre merveilleuse commune, il suffit de vous inscrire à notre newsletter ci-dessous.</p>
+    </div>
+
+    <div class="container-fluid container-xl mb-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="card border-0">
+                    <div class="card-header bg-transparent">
+                        <h4 class="card-title font-weight-bold">
+                            Inscription à la newsletter
+                        </h4>
+                    </div>
+                    <div class="card-body bg-transparent border-0">
+                        <form action="{{ path('newsletter_inscription') }}" method="post">
+                            <input name="username" type="text" id="username" class="coucou"> {# honeypot #}
+                            <div class="form-group"><label for="inputEmailInscription">Email</label><input type="email" class="form-control" placeholder="Votre adresse e-mail ..." name="emailInscription" id="inputEmailInscription"></div>
+                            <input type="hidden" id="recaptchaResponse" name="g-recaptcha-response">
+                            <input type="hidden" id="grecaptchakey" data-grecaptchakey="{{google_recaptcha_site_key}}"> 
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">
+                                <i class="far fa-paper-plane"></i>
+                                Envoyer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid container-xl mb-4">
+        <p>Si vous souhaitez vous désinscrire, il suffit de remplir le formulaire ci-dessous en indiquant l'email avec lequel vous vous êtes inscrit à notre newsletter.</p>
+    </div>
+
+    <div class="container-fluid container-xl mb-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="card border-0">
+                    <div class="card-header bg-transparent">
+                        <h4 class="card-title font-weight-bold">
+                            Désinscription de la newsletter
+                        </h4>
+                    </div>
+                    <div class="card-body bg-transparent border-0">
+                        <form action="{{ path('newsletter_desinscription') }}" method="post">
+                            <input name="username" type="text" id="username2" class="coucou"> {# honeypot #}
+                            <div class="form-group"><label for="inputEmailDesinscription">Email</label><input type="email" class="form-control" placeholder="Votre adresse e-mail ..." name="emailDesinscription" id="inputEmailDesinscription"></div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">
+                                <i class="far fa-paper-plane"></i>
+                                Envoyer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+{% endblock %}
+
+{% block javascripts %}
+    {#<script src="https://www.google.com/recaptcha/api.js?render={{google_recaptcha_site_key}}"></script>#}
+    <script>
+        var grecaptchakey = $('#grecaptchakey').data('grecaptchakey'); 
+        document.write("<script src=\"https://www.google.com/recaptcha/api.js?render="+grecaptchakey+"\"><"+"/script>");
+    </script>
+    <script>
+        $('.coucou').hide();
+        grecaptcha.ready(function() {
+          grecaptcha.execute(grecaptchakey, {action: 'submit'}).then(function(token) {
+              document.getElementById("recaptchaResponse").value = token;
+          });
+        });
+    </script>
+{% endblock %}    

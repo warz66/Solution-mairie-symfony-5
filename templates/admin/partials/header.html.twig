@@ -1,0 +1,123 @@
+<div class="wrapper">
+
+        <nav id="sidebar">
+        
+            <div class="sidebar-header">
+                <h3>Mairie Administration</h3>
+            </div>
+
+            <ul class="list-unstyled">
+                <li class="{% if app.request.attributes.get('_route') == 'admin_dashboard_index' %} active {% endif %}">
+                    <a href="{{ path('admin_dashboard_index') }}"><i class="fas fa-tachometer-alt mr-2"></i>Tableau de bord</a>
+                </li>
+                <div class="dropdown-divider"></div>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_rubrique_index' or app.request.attributes.get('_route') == 'admin_rubrique_new' or app.request.attributes.get('_route') == 'admin_rubrique_edit' or app.request.attributes.get('_route') == 'admin_rubrique_trash_index' %} active {% endif %}">
+                    <a href="{{ path('admin_rubrique_index') }}"><i class="far fa-compass mr-1"></i>Menu / <i class="fas fa-sort-amount-down mr-1"></i>Rubriques</a>
+                </li>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_sous-rubrique_index' or app.request.attributes.get('_route') == 'admin_sous-rubrique_new' or app.request.attributes.get('_route') == 'admin_sous-rubrique_edit' or app.request.attributes.get('_route') == 'admin_sous-rubrique_trash_index' %} active {% endif %}">
+                    <a href="{{ path('admin_sous-rubrique_index') }}"><i class="fas fa-sort-amount-down-alt mr-2"></i>Sous-rubriques</a>
+                </li>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_page_index' or app.request.attributes.get('_route') == 'admin_page_new' or app.request.attributes.get('_route') == 'admin_page_edit' or app.request.attributes.get('_route') == 'admin_page_trash_index' %} active {% endif %}">
+                    <a href="{{ path('admin_page_index') }}"><i class="far fa-file-word mr-2"></i>Pages</a>
+                </li>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_actualite_index' or app.request.attributes.get('_route') == 'admin_actualite_new' or app.request.attributes.get('_route') == 'admin_actualite_edit' or app.request.attributes.get('_route') == 'admin_actualite_trash_index' %} active {% endif %}">
+                    <a href="{{ path('admin_actualite_index') }}"><i class="far fa-newspaper mr-2"></i>Actualités</a>
+                </li>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_evenement_index' or app.request.attributes.get('_route') == 'admin_evenement_new' or app.request.attributes.get('_route') == 'admin_evenement_edit' or app.request.attributes.get('_route') == 'admin_evenement_trash_index' %} active {% endif %}">
+                    <a href="{{ path('admin_evenement_index') }}"><i class="far fa-calendar-alt mr-2"></i>Événements</a>
+                </li>
+                <div class="dropdown-divider"></div>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_carrousel_index' or app.request.attributes.get('_route') == 'admin_carrousel_new' or app.request.attributes.get('_route') == 'admin_carrousel_edit' %} active {% endif %}">
+                    <a href="{{ path('admin_carrousel_index') }}"><i class="fas fa-retweet mr-2"></i>Carrousel</a>
+                </li>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_flash-info_index' or app.request.attributes.get('_route') == 'admin_flash-info_new' or app.request.attributes.get('_route') == 'admin_flash-info_edit' %} active {% endif %}">
+                    <a href="{{ path('admin_flash-info_index') }}"><i class="fas fa-bolt mr-2"></i>Flash Infos</a>
+                </li>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_acces-rapide_index' or app.request.attributes.get('_route') == 'admin_acces-rapide_new' or app.request.attributes.get('_route') == 'admin_acces-rapide_edit' %} active {% endif %}">
+                    <a href="{{ path('admin_acces-rapide_index') }}"><i class="far fa-share-square mr-2"></i>Accès rapide</a>
+                </li>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_kiosque_index' or app.request.attributes.get('_route') == 'admin_kiosque_new' or app.request.attributes.get('_route') == 'admin_kiosque_edit' %} active {% endif %}">
+                    <a href="{{ path('admin_kiosque_index') }}"><i class="fas fa-book-open mr-2"></i></i>Kiosque</a>
+                </li>
+                <li class="{% if app.request.attributes.get('_route') == 'admin_galerie_index' or app.request.attributes.get('_route') == 'admin_galerie_new' or app.request.attributes.get('_route') == 'admin_galerie_edit' or app.request.attributes.get('_route') == 'admin_galerie_trash_index' %} active {% endif %}">
+                    <a href="{{ path('admin_galerie_index') }}"><i class="far fa-images mr-2"></i>Galeries</a>
+                </li>
+                {#<li>
+                    <a href="#"><i class="far fa-id-badge mr-2"></i>Contact</a>
+                </li>#}
+                <li>
+                    {#{% if app.request.attributes.get('_route') == 'admin_newsletter_abonnes_index' %}
+                        <a href="#newsletterSubmenu" data-toggle="collapse" class="dropdown-toggle openSubmenu">
+                    {% else %}
+                        <a href="#newsletterSubmenu" data-toggle="collapse" class="dropdown-toggle">
+                    {% endif %}
+                        <i class="far fa-envelope mr-2"></i>Newsletter</a>
+                    <ul class="collapse list-unstyled" id="newsletterSubmenu">
+                        <li class="{% if app.request.attributes.get('_route') == 'admin_newsletter_abonnes_index' %} active {% endif %}">
+                            <a href="{{ path('admin_newsletter_abonnes_index') }}">Abonnés</a>
+                        </li>
+                        <li>
+                            <a href="https://login.mailchimp.com" target="_blank">Mailing</a>
+                        </li>
+                    </ul>#}
+                    {#<a href="https://login.mailchimp.com" target="_blank"><i class="far fa-envelope mr-2"></i>Newsletter</a>#}
+                </li>
+                <div class="dropdown-divider"></div>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="{% if app.request.attributes.get('_route') == 'admin_information_edit' %} active {% endif %}">
+                        <a href="{{ path('admin_information_edit') }}"><i class="fas fa-info-circle mr-2"></i>Informations</a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="{% if app.request.attributes.get('_route') == 'admin_user_index' or app.request.attributes.get('_route') == 'admin_user_new' or app.request.attributes.get('_route') == 'admin_user_edit' %} active {% endif %}">
+                        <a href="{{ path('admin_user_index') }}"><i class="fas fa-users mr-2"></i>Utilisateurs</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+        </nav>
+
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-default bg-default">
+
+                <div class="container-fluid p-0">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                        <i class="fas fa-align-left"></i>
+                    </button>
+
+                    <button class="btn btn-primary d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+
+                    <div class="collapse navbar-collapse text-right" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto text-primary">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{mailchimp_url}}" target="_blank">Mailchimp</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{google_analytics_url}}" target="_blank">Google Analytics</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('admin_account_profile') }}">Mon compte</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('admin_account_logout') }}">Se déconnecter</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                
+            </nav>
+
+{% for label, messages in app.flashes %}
+    <div class="container">
+        <div class="alert alert-{{label}}">
+            {% for message in messages %}
+                <p>{{ message | raw }}</p>
+            {% endfor %}
+        </div>    
+    </div>
+{% endfor %}

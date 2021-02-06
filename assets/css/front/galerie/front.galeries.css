@@ -1,0 +1,37 @@
+    /* cards galerie */
+
+    #galerieCards a{
+        text-decoration: none;
+        color: inherit;
+    }
+    .card {
+        background-color: #e9ecef;
+        transition: all 0.4s ease-out;
+        border-color: #e9ecef;
+    }
+    .card-title {
+        font-weight: bold;
+    }
+    .card:hover{
+        background-color: darkgrey !important;  
+    }
+
+    .card-img-top {
+        /*height: 21vh;
+        object-fit: cover;*/
+        /*border-radius: 0;*/
+    }
+
+    /* pagination */
+
+    .page-link {
+        border: none;
+        color: black;
+        border-radius: 1.5px;
+    }
+    .page-link:hover {
+        color: #FF5722;
+    }
+    .pagination .active .page-link{
+        background-color: #FF5722 !important;
+    }

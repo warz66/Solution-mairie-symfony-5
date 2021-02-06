@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        
+        {{ encore_entry_link_tags('css/admin.app') }}
+        {#<link rel="stylesheet" href="{{ asset('build/css/admin.app.css') }}">#}
+
+        {% block stylesheets %}
+        {% endblock %}
+    </head>
+    <body>
+        {% include 'admin/partials/header.html.twig' %}
+
+        {% block body %}{% endblock %}
+
+        {% include 'admin/partials/footer.html.twig' %}
+
+        {{ encore_entry_script_tags('js/admin.app') }}
+        
+        {% block javascripts %}
+        {% endblock %}
+    </body>
+</html>

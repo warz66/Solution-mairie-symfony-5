@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{galerie.title}} | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.galerie.app') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid container-xl" id="headerGalerie">
+        <div>
+            {% if 'picsum' in galerie.coverImage %}
+                <img src="{{galerie.coverImage}}" alt="{{galerie.title}}">
+            {% else %}
+                <img src="{{(galerie_cover_path ~ galerie.coverImage) | imagine_filter('publication_title_edit')}}" alt="{{galerie.title}}">
+            {% endif %}
+        </div>
+        <div id="headerGalerieText">
+            <div>
+                <span>{{galerie.title}}</span>
+            </div>
+            {% if galerie.description is not empty %}
+                <div>
+                    {{galerie.description}}
+                </div>
+            {% endif %}         
+        </div>
+    </div>
+    <div id="marginHeaderGalerie" class="mb-5"></div>
+
+    <div class="container-fluid container-xl mt-5" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('galeries') }}">Toutes les galeries</a></li>
+                <li class="breadcrumb-item active">{{galerie.title}}</li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container-fluid container-xl">
+        <div class="row">
+            <div class="col">
+                <div class="grid are-images-unloaded">
+                    {% for image in images  %}
+                        <div class="grid-item">
+                            <div>
+                                {% if 'picsum' in image.url %} {# à virer une fois en prod #}
+                                    <a href="{{ image.url }}" data-fancybox="images" data-caption="{{ image.caption }}">
+                                        <img class="rounded" src="{{image.url}}" alt="{{ image.caption }}">
+                                    </a>
+                                {% else %}
+                                    <a href="{{ image.url }}" data-fancybox="images" data-caption="{{ image.caption }}">
+                                        <img class="rounded" src="{{ image.url | imagine_filter('galerie_content_edit') }}" alt="{{ image.caption }}">
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="page-load-status">
+                    <div class="loader-ellips infinite-scroll-request">
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="sr-only">Chargement...</span>
+                        </div>
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="sr-only">Chargement...</span>
+                        </div>
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="sr-only">Chargement...</span>
+                        </div>            
+                    </div>
+                    <p class="infinite-scroll-last">Fin de la galerie</p>
+                    <p class="infinite-scroll-error">Plus de pages à charger</p>
+                    <input id="pageMax" type="hidden" value="{{ pageMax }}">
+                    <input id="galerieSlug" type="hidden" value="{{ galerie.slug }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ encore_entry_script_tags('js/front.galerie.app') }}
+{% endblock %}

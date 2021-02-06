@@ -1,0 +1,37 @@
+{% block _publication_ressources_widget %}
+    {{ form_widget(form) }}
+    <input type="hidden" id="widgets-ressource-counter" value="0">
+    <button type="button" id="add-ressource" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        Ajouter une ressource
+    </button>
+{% endblock %}
+
+{% block _publication_ressources_entry_row %}
+    {{ form_widget(form) }} 
+{% endblock %}
+
+{% block _publication_ressources_entry_widget %}
+    <div class="form-group" id="block_{{id}}">
+        <div class="row">
+            <div class="col-11 pr-2">
+                {#{% if form.vars.value is not null %} 
+                    {{ form_widget(form.urlFile, {'attr': {'placeholder' : form.vars.value.url} }) }}
+                {% else %}
+                    {{ form_widget(form.urlFile) }}
+                {% endif %}#}
+                {{ form_errors(form.title) }}
+                {{ form_widget(form.title) }}
+                {{ form_errors(form.urlFile) }}
+                {{ form_widget(form.urlFile) }}
+                <div id="inputFileError_{{id}}" class="alert alert-danger py-1 px-2 mb-0 mt-1" role="alert" style="display:none;"></div> 
+                {#{% if form.vars.value is not null %}    
+                    <input class="inputRessourceFileName" type="hidden" data-imgfile="{{form.vars.value.url}}">
+                {% endif %}#}
+            </div>
+            <div class="col-1 d-flex  p-0">
+                <button type="button" data-action="delete" data-target="#block_{{id}}" class="btn btn-danger"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

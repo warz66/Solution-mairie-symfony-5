@@ -1,0 +1,134 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Création d'une nouvelle Revue{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<style>
+    .custom-file-input {
+        cursor: pointer;
+    }
+
+    legend {
+        padding-top:0 !important;
+    }
+
+    /**************** button on off *******************/
+    .custom-switch.custom-switch-adaptive {
+        padding-left: 0;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-label {
+        padding: 0 1.3em;
+        cursor:pointer;
+        position: relative;
+        border-radius: 1em;
+        line-height: 1.4em;
+        /*color: #e45c27;*/
+        border: 1px solid #e45c27;
+        background-color: #f8f9fa;
+        transition: background-color 200ms;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-label::before {
+        content: none;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-label::after {
+        position: absolute;
+        background-color: #e45c27;
+        height: 1.2em;
+        top: 0.1em;
+        left: 0.1em;
+        width: 1.2em;
+        border-radius: 1em;
+        transition: left 200ms;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label {
+        color: #fff;
+        background-color: #e45c27;
+        border-color: #e45c27;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label::after {
+        background-color: #fff;
+        left: calc(100% - 1.2em);
+        transform: none;
+        -webkit-transform: none;
+    }
+    /***********************************************/
+
+</style>
+{% endblock %}
+
+{% form_theme form 'admin/kiosque/_statutEdit.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Nouvelle Revue</h1>
+        <hr class="mb-5 mt-5">
+        {{ form_start(form) }}
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                {{form_row(form.title)}}
+                {{form_row(form.parution)}}
+                {{form_row(form.urlFile)}}
+                {{form_row(form.statut)}}
+            </div>  
+        </div>
+        <div class="row my-5">
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <button disabled="true" id="submit" type="submit" class="btn btn-primary mr-2">
+                        <span id="b-e-default"><i class="far fa-save"></i></span> 
+                        <span id="b-e-loading" class="spinner-border spinner-border-sm" style="display:none;" role="status"></span>
+                        &nbsp;Enregistrer
+                    </button>
+                    <a href="{{ path('admin_kiosque_index') }}" class="btn btn-danger ml-2" id="cancel">
+                        <i class="fas fa-undo-alt"></i>&nbsp;&nbsp;Retour à l'index
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+
+        // configuration de datepicker
+
+        $(document).ready(function() {
+            !function(a){a.fn.datepicker.dates.fr={days:["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"],daysShort:["dim.","lun.","mar.","mer.","jeu.","ven.","sam."],daysMin:["d","l","ma","me","j","v","s"],months:["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"],monthsShort:["janv.","févr.","mars","avril","mai","juin","juil.","août","sept.","oct.","nov.","déc."],today:"Aujourd'hui",monthsTitle:"Mois",clear:"Date illimitée",weekStart:1,format:"dd/mm/yyyy"}}(jQuery);
+
+            $('#kiosque_objet_parution').datepicker({
+                clearBtn: false,
+                language: 'fr',
+                format: 'dd-mm-yyyy',
+                forceParse: false
+            });
+
+            var d = new Date();
+            $("#kiosque_objet_parution").datepicker("setDate", new Date(d.getFullYear(), d.getMonth(), d.getDate()));
+
+        });
+
+        // input Image de couverture
+        
+        $('#kiosque_objet_urlFile_file').next().html('<i class="text-muted">Veuillez choisir le fichier pdf de la revue</i>');
+        
+        $(".vich-file a").removeAttr("href"); // supprime le lien href de vichupload
+
+        $('#kiosque_objet_urlFile_file').on('change', function(event) {
+            var inputFile = event.currentTarget;
+            if (inputFile.files.length == 1) {
+                $(this).next().html(inputFile.files[0].name);
+            } else if ( inputFile.files.length == 0) {
+                $(this).next().html('<i class="text-muted">Veuillez choisir le fichier pdf de la revue</i>');
+            }
+        });
+
+
+        $(document).ready(function() {
+            $('#submit').prop('disabled', false);
+        });
+    </script>
+{% endblock %}

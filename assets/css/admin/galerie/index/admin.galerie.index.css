@@ -1,0 +1,44 @@
+/**************** button on off *******************/
+.custom-switch.custom-switch-adaptive {
+	 padding-left: 0;
+}
+.custom-switch.custom-switch-adaptive .custom-control-label {
+    padding: 0 1.3em;
+    cursor:pointer;
+    position: relative;
+    border-radius: 1em;
+    line-height: 1.4em;
+    /*color: purple;*/
+    border: 1px solid #e45c27;
+    background-color: #f8f9fa;
+    transition: background-color 200ms;
+}
+.custom-switch.custom-switch-adaptive .custom-control-label::before {
+    content: none;
+}
+.custom-switch.custom-switch-adaptive .custom-control-label::after {
+    position: absolute;
+    background-color: #e45c27;
+    height: 1.2em;
+    top: 0.1em;
+    left: 0.1em;
+    width: 1.2em;
+    border-radius: 1em;
+    transition: left 200ms;
+}
+.custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label {
+    /*color: #000;*/
+    background-color: #e45c27;
+    border-color: #e45c27;
+}
+.custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label::after {
+    background-color: #fff;
+    left: calc(100% - 1.2em);
+    transform: none;
+    -webkit-transform: none;
+}
+.custom-switch.custom-switch-adaptive .custom-control-label:hover {
+    box-shadow: 0 0 6px 0px #e45c27;
+    transition: 0.15s
+}
+/*****************************************************/

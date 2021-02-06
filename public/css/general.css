@@ -1,0 +1,80 @@
+@font-face {
+    font-family: "Nouvelle Vague";
+    src: url("/fonts/nouvelle_vague_final.ttf");
+}
+
+@media (max-width: 577px) {
+    .container-fluid {
+        padding:0px;
+    }
+}
+
+body {
+    font-family: 'Noto Sans', sans-serif !important; 
+}
+
+/* bouton retour haut */    
+
+#retourHaut{
+    border-radius: 3px;
+    padding: 15px;
+    font-size: 25px;
+    text-align: center;
+    color: black;
+    background: rgba(0, 0, 0, 0.1);
+    position: fixed;
+    right: 20px;
+    opacity: 1;
+    z-index: 99999;
+    transition: all ease-in 0.5s;
+    backface-visibility: hidden;
+    text-decoration: none;
+    line-height: 0;
+    cursor: pointer;
+}
+#retourHaut.invisible{
+    bottom: -35px;
+    opacity: 0;
+    transition: all ease-in 0.5s;
+}
+
+#retourHaut.visible{
+    bottom: 20px;
+    opacity: 1;
+}
+
+@media (hover: hover) {
+    #retourHaut:hover {
+        background: rgba(0, 0, 0, 0.4);
+    }
+    /* à tester */
+    /*a:active, a:visited, a:hover, a:link, a:focus { 
+        background-color: inherit !important;
+        color: inherit !important;
+    }*/
+}
+
+/* fil d'ariane */
+
+#filAriane {
+    font-size: 16px;
+    font-style: italic;
+}
+
+.breadcrumb {
+    background-color: white !important;
+    margin-bottom: 20px !important;
+    padding: 0px 2px !important;
+}
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">" !important;
+}
+
+.breadcrumb a {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+.breadcrumb a:hover {
+    color: #FF5722 !important;
+}

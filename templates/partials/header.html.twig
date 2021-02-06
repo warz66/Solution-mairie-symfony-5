@@ -1,0 +1,84 @@
+    {#{{render_hinclude(controller('App\\Controller\\SearchController::search'))}}#}
+
+    <button id="buttonHamburger" class="d-md-none">
+        <span></span>
+    </button>  
+
+    <div class="container-xl container-fluid position-relative mb-md-5" id="logoHeader">
+        <span id="cercle2design"></span>
+        <span id="cercle1design"></span>
+        <span id="cercle3design"><i class="far fa-address-book fa-2x"></i></span>
+        <div id="divVille">
+            <a href="/">
+                <img src="/img/rsc/ville.png" alt="logo ville de Rossillon">
+            </a>
+        </div>
+        <div id="divSousTitre">
+            <span>Terre d'Ocre et de lumière</span>
+        </div>
+    </div>
+    <div class="container-fluid container-xl" id="infosMairie">
+        <hr class="mb-5 mt-4 d-md-block d-none">
+        <div class="row d-flex align-items-center justify-content-center">
+            {% if information.complement is not empty %}
+                <div class="col-md-4 mb-3">
+                    {{information.complement | raw}}
+                </div>
+            {% endif %}
+            <div class="col-md-4 mb-3">
+                <div class="pb-2">
+                    {% for reseauSocial in information.reseauxSociaux %}
+                        <a rel="noopener" href="{{reseauSocial.url}}" target="_blank" class="btn {{reseauSocial.icone}} fa-2x p-2" title="{{reseauSocial.nom}}"></a>
+                    {% endfor %}
+                </div>
+                <div class="pb-4">
+                    {{information.adresse}}<br>{{information.cp}} {{information.ville}}<br>Tel: {{information.telephone}}
+                </div>
+            </div>
+             {% if information.horaire is not empty %}
+                <div class="col-md-4 mb-3">
+                    {{information.horaire | raw}}
+                </div>
+            {% endif %}
+        </div>
+        <hr class="mb-5 mt-4 d-md-block d-none">
+    </div>
+
+    {{render(controller('App\\Controller\\MenuController::mainMenu'))}}
+
+        {% for label, messages in app.flashes %}
+            <div class="container mt-5">
+                <div class="alert alert-{{label}}">
+                    {% for message in messages %}
+                        <p>{{ message | raw }}</p>
+                    {% endfor %}
+                </div>    
+            </div>
+        {% endfor %}
+    {#<div class="container-fluid container-xl p-0" id="menu">
+        <form action="{{ path('homepage') }}" method="post" id="searchBar">
+            <div class="form-group has-search">
+                <div class="input-group">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <span class="form-control-feedback" id="searchBarClose">&times;</span>
+                    <input type="text" class="form-control" placeholder="Tapez votre recherche ici" id="searchBarInput">
+                </div>
+            </div>
+        </form>
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('homepage') }}"><i class="fas fa-home"></i></a>
+            </li>
+            <li class="nav-item" id="searchPop">
+                <a class="nav-link" href="javascript:void(0)"><i class="fas fa-search"></i></a>
+            </li>
+            {% for fields in menu %}
+                {% if fields is not null %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('publication_router', {'slug': fields.slug}) }}">{{fields.title}}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul> 
+    </div>#}
+

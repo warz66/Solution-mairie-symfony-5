@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{actualite.title}} | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.publication.actualite') }}
+{% endblock %}
+
+    {% set trans_day_hash = { "Monday": "Lundi", "Tuesday": "Mardi", "Wednesday": "Mercredi", "Thursday": "Jeudi", "Friday": "Vendredi", "Saturday": "Samedi", "Sunday": "Dimanche" } %}
+    {% set trans_month_hash = { "January": "Janvier", "February": "Février", "March": "Mars", "April ": "Avril", "May": "Mai", "June": "Juin", "July": "Juillet", "August": "Août", "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "Décembre" } %}
+    
+{% block body %}
+    <div class="container-fluid container-xl" id="headerRubrique">
+        <div>
+            {% if 'picsum' in actualite.coverImage %}
+                <img src="{{actualite.coverImage}}" alt="{{actualite.title}}">
+            {% elseif preview == true %}
+                <img src="{{(publication_cover_path ~ actualite.coverImage) | imagine_filter('publication_title_edit') ~ '?' ~ random()}}" alt="{{actualite.title}}">
+            {% else %}
+                <img src="{{(publication_cover_path ~ actualite.coverImage) | imagine_filter('publication_title_edit')}}" alt="{{actualite.title}}">
+            {% endif %}
+        </div>
+        <div id="headerRubriqueText">
+            <div>
+                {{actualite.title}}
+            </div>
+            <div>
+                {{actualite.introduction}}
+            </div>     
+        </div>
+    </div>
+    <div id="marginHeaderRubrique" class="mb-5"></div>
+
+    <div class="container-fluid container-xl" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{path('actualites')}}">Toutes l'actualités</a></li>
+                <li class="breadcrumb-item active">{{actualite.title}}</li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div class="container-fluid container-xl">
+        <hr>
+        <p>
+            <span class="font-weight-bold" style="color: {{colorItemsActualiteCategory[actualite.actualite.category]}};">{{actualite.actualite.category}}</span>&nbsp;-&nbsp;
+            <i>
+                Publié le {{trans_day_hash[actualite.actualite.debutPublication|date('l')]|lower}}&nbsp;{{actualite.actualite.debutPublication|date('d')}}&nbsp;
+                {{trans_month_hash[actualite.actualite.debutPublication|date('F')]|lower}}&nbsp;
+                {{actualite.actualite.debutPublication|date('Y')}}
+            </i>
+        </p>
+        <div class="row pt-3">
+            {% if actualite.infosPratiques is not null or liensUtiles is not empty or actualite.ressources.count or actualite.galeries.count %}
+                <div class="col-lg-9 mb-5" id="pageContent">
+            {% else %}
+                <div class="col" id="pageContent">
+            {% endif %}
+                {{actualite.content | raw}}
+            </div>
+            {% if actualite.infosPratiques is not null or liensUtiles is not empty or actualite.ressources.count or actualite.galeries.count %}
+                <div class="col-lg-3" id="pageExtraInfos">
+                    <div class="row">
+                        {% if actualite.infosPratiques is not null %}
+                            <div class="col-sm-6 col-lg-12 p-lg-0 mb-3">
+                                <div class="card border-0 p-3 bg-light h-100">
+                                    <p class="h5 text-center font-weight-bold pb-2"><i class="fas fa-info-circle"></i>&nbsp;INFOS PRATIQUES</p>
+                                    {{actualite.infosPratiques | raw}}
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if liensUtiles is not empty %}
+                        <div class="col-sm-6 col-lg-12 p-lg-0 mb-3">
+                            <div class="card border-0 p-3 bg-light h-100">
+                                <p class="h5 text-center font-weight-bold pb-2"><i class="fas fa-link"></i>&nbsp;LIENS UTILES</p>
+                                <ul>
+                                {% for lienUtile in liensUtiles %}
+                                    <li><a href="{{lienUtile.url}}">{{lienUtile.title}}</a></li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if actualite.ressources.count %}
+                            <div class="col-sm-6 col-lg-12 p-lg-0 mb-3">
+                                <div class="card border-0 p-3 bg-light h-100">
+                                    <p class="h5 text-center font-weight-bold pb-2"><i class="far fa-file-pdf"></i>&nbsp;RESSOURCES</p>
+                                    <ul>
+                                    {% for ressource in actualite.ressources %}
+                                        {% if 'http://' in ressource.url  or 'https://' in ressource.url %} {# à virer #}
+                                            <li><a href="{{ ressource.url }}" target="_blank">{{ressource.title}}</a></li>
+                                        {% else %}
+                                            {% set urlFileRessource = ressources_path ~ ressource.url %}
+                                            <li><a href="{{ urlFileRessource }}" target="_blank">{{ressource.title}}&nbsp;{{ urlFileRessource | filesize }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if actualite.galeries.count %}
+                            <div class="col-sm-6 col-lg-12 p-lg-0 mb-3">                        
+                                <div class="card border-0 p-3 bg-light h-100">
+                                    <p class="h5 text-center font-weight-bold pb-2"><i class="far fa-images"></i>&nbsp;GALERIE</p>
+                                    <ul>
+                                    {% for galerie in actualite.galeries %}
+                                        <li><a href="{{ path('galerie', {'slug': galerie.slug}) }}">{{galerie.title}}</a></li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>                        
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

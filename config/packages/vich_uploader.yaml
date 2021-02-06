@@ -1,0 +1,30 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        cover_image_publication:
+            uri_prefix: /img/indatabase/publication/cover
+            upload_destination: '%kernel.project_dir%/public/img/indatabase/publication/cover'
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
+            #inject_on_load: true
+        cover_image_galerie:
+            uri_prefix: /img/indatabase/galerie/cover
+            upload_destination: '%kernel.project_dir%/public/img/indatabase/galerie/cover'
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
+        ressource:
+            uri_prefix: /rsc/indatabase/ressource/
+            upload_destination: '%kernel.project_dir%/public/rsc/indatabase/ressource'
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
+            #inject_on_load: true
+        cover_image_carrousel:
+            uri_prefix: /img/indatabase/carrousel/cover
+            upload_destination: '%kernel.project_dir%/public/img/indatabase/carrousel/cover'
+            namer: Vich\UploaderBundle\Naming\OrignameNamer
+        kiosque_objet:
+            uri_prefix: /rsc/indatabase/kiosque
+            upload_destination: '%kernel.project_dir%/public/rsc/indatabase/kiosque'
+            namer: Vich\UploaderBundle\Naming\OrignameNamer                 
+    #mappings:
+    #    products:
+    #        uri_prefix: /images/products
+    #        upload_destination: '%kernel.project_dir%/public/images/products'

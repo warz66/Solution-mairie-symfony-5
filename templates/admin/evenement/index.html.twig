@@ -1,0 +1,189 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration des événements{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        /**************** button on off *******************/
+        .custom-switch.custom-switch-adaptive {
+            padding-left: 0;
+        }
+        .custom-switch.custom-switch-adaptive .custom-control-label {
+            padding: 0 1.3em;
+            cursor:pointer;
+            position: relative;
+            border-radius: 1em;
+            line-height: 1.4em;
+            /*color: purple;*/
+            border: 1px solid #e45c27;
+            background-color: #f8f9fa;
+            transition: background-color 200ms;
+        }
+        .custom-switch.custom-switch-adaptive .custom-control-label::before {
+            content: none;
+        }
+        .custom-switch.custom-switch-adaptive .custom-control-label::after {
+            position: absolute;
+            background-color: #e45c27;
+            height: 1.2em;
+            top: 0.1em;
+            left: 0.1em;
+            width: 1.2em;
+            border-radius: 1em;
+            transition: left 200ms;
+        }
+        .custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label {
+            /*color: #000;*/
+            background-color: #e45c27;
+            border-color: #e45c27;
+        }
+        .custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label::after {
+            background-color: #fff;
+            left: calc(100% - 1.2em);
+            transform: none;
+            -webkit-transform: none;
+        }
+        .custom-switch.custom-switch-adaptive .custom-control-label:hover {
+            box-shadow: 0 0 6px 0px #e45c27;
+            transition: 0.15s
+        }
+        /*****************************************************/
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Administration des Événements</h1>
+        <table class="table table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="text-center align-middle">Image de couverture</th>
+                    <th class="text-center align-middle">Titre de l'événement</th>
+                    <th class="text-center align-middle">Catégorie</th>
+                    <th class="text-center align-middle">Date de l'événement</th>
+                    <th class="text-center align-middle">En ligne</th>
+                    <th class="text-center align-middle"><a href="{{ path('admin_evenement_new') }}" class="btn btn-outline-primary" style="width: 44px" title="Nouvelle événement"><i class="fas fa-plus"></i></a></th>
+                    <th class="text-center align-middle"><a href="{{ path('admin_evenement_trash_index') }}" class="btn btn-outline-primary" style="width: 44px" title="Voir la corbeille"><i class="fas fa-dumpster"></i></a></th>   
+                </tr>
+            </thead>
+            <tbody>
+                {% for evenement in evenements %}
+                    <tr data-id='{{ evenement.id }}' {% if PublicationsWithDependencies[evenement.id] is defined %} data-msgdependencies='{{PublicationsWithDependencies[evenement.id]}}' {% endif %}>
+                        {% if 'picsum' in evenement.coverImage %} {# à virer une fois en prod #}
+                            <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}';" class="text-center align-middle" title="Editer">
+                                <img style="max-width:300px;height:auto;" src="{{evenement.coverImage}}" alt="">
+                            </td>
+                        {% else %}
+                            <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}';" class="text-center align-middle" title="Editer">
+                                <img src="{{(publication_cover_path ~ evenement.coverImage) | imagine_filter('publication_cover_index_thumb')}}" alt="">
+                            </td>
+                        {% endif %}
+                        <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}';" class="align-middle text-center" title="Editer">{{evenement.title}}</td>
+                        <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}';" class="align-middle text-center" title="Editer">{{evenement.evenement.category}}</td>
+                        <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}';" class="align-middle text-center" title="Editer">
+                            {% if evenement.evenement.statut %}<strong class="text-danger">Annulé</strong><br>{% endif %}
+                            {% if evenement.evenement.finEvenement is null %}
+                                {{evenement.evenement.debutEvenement|date("d/m/y")}}<br><i class="fas fa-long-arrow-alt-down"></i><br>Indéfinie
+                            {% else %}
+                                {{evenement.evenement.debutEvenement|date("d/m/y")}}<br><i class="fas fa-long-arrow-alt-down"></i></i><br>{{evenement.evenement.finEvenement|date("d/m/y")}}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle text-center" style="width:17%">
+                            <div class="custom-control custom-switch custom-switch-adaptive h5" style="margin:0;">
+                                <input data-id='{{ evenement.id }}' id="statut{{ evenement.id }}" type="checkbox" class="custom-control-input statutCheckbox" {% if evenement.statut %} checked {% endif %}>
+                                <label for="statut{{ evenement.id }}" title="Publier" class="custom-control-label">&zwj;</label>
+                            </div>
+                        </td>
+                        <td class="align-middle text-center"><a href="{{ path('admin_evenement_edit',{'id': evenement.id }) }}" class="btn btn-outline-primary" style="width: 44px" title="Editer l'évènement"><i class="fas fa-edit"></i></a></td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ evenement.id }}' data-title='{{ evenement.title }}' class="btn btn-outline-primary btnTrash" title="Envoyer vers la corbeille" style="width: 44px;"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table> 
+        <div class="text-center">
+            {{ knp_pagination_render(evenements) }}
+        </div>    
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+    
+        $('.btnTrash').click(function(e) {
+            var id = $(this).data('id');
+            var msgdependencies = $(this).closest('tr').data('msgdependencies');
+            if (typeof msgdependencies === "undefined") {
+                var msg = "Êtes-vous sûr de vouloir envoyer l'évènement <strong>"+$(this).data('title')+"</strong>"+" à la corbeille ?";
+            } else {
+                var msg = "Attention, vous êtes sur le point d'envoyer à la corbeille du contenu dont certains objets dépendent :<br>"+msgdependencies+"<br><br>Êtes-vous sûr de vouloir supprimer ce contenu ?"
+            }
+            bootbox.dialog({
+                size: 'lg',
+                message: msg,
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/evenement/'+id+'/trash';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.statutCheckbox').click(function(e) {
+            var id = $(this).data('id');
+            var statut = $(this).prop('checked');
+            var msgdependencies = $(this).closest('tr').data('msgdependencies');
+            if (statut || typeof msgdependencies === "undefined") {
+                $.ajax({
+                type:'POST',
+                dataType:'JSON',
+                url: '/admin/evenement/'+id+'/statut',
+                data:'statut='+statut,
+                success: function(result) {
+                    $('#statut'+id).prop('checked',result);  
+                }});
+            } else {  
+                e.preventDefault();
+                bootbox.dialog({
+                    size: 'lg',
+                    message: "Attention, vous êtes sur le point de dépublier du contenu dont certains objets dépendent :<br>"+msgdependencies+"<br><br>Êtes-vous sûr de vouloir dépublier ce contenu ?",
+                    buttons: {
+                        annuler: {
+                            label: 'Annuler',
+                            className: 'btn-secondary',
+                        },
+                        valider: {
+                            label: 'Valider',
+                            className: 'btn-danger',
+                            callback: function(result){
+                                if (result) {
+                                    $.ajax({
+                                        type:'POST',
+                                        dataType:'JSON',
+                                        url: '/admin/evenement/'+id+'/statut',
+                                        data:'statut='+statut,
+                                        success: function(result) {
+                                            $('#statut'+id).prop('checked',result);  
+                                    }}); 
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

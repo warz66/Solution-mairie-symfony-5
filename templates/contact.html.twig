@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid container-xl mt-5" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item active">Contact</li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container-fluid container-xl mb-4">
+       <h4 class="font-weight-bold">Contacter nous</h4>
+        <p>Ce formulaire vous permet de contacter les services municipaux de la commune de Rossillon par voie électronique.</p>
+    </div>
+
+    {#<div class="container-fluid container-xl mb-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card border-0">
+                    <div class="card-body bg-transparent border-0">
+                        <form action="{{ path('contact') }}" method="post">
+                            <input name="username" type="text" id="username" class="coucou"> 
+                            <div class="form-group"><label for="inputEmail">Email</label><input type="email" class="form-control" placeholder="Votre adresse e-mail ..." name="email" id="inputEmail" required></div>
+                            <div class="form-group"><label for="inputObjet">Objet</label><input type="text" class="form-control" placeholder="L'objet de votre message ..." name="objet" id="inputObjet" required></div>
+                            <div class="form-group"><label for="inputContenu">Message</label><textarea type="text" class="form-control" placeholder="Le contenu de votre message ..." name="message" id="inputContenu" rows="7" required></textarea></div>
+                            <input type="hidden" id="recaptchaResponse" name="g-recaptcha-response">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">
+                                <i class="far fa-paper-plane"></i>
+                                Envoyer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>#}
+
+    <div class="container-fluid container-xl my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                {{form_start(form)}}
+                    <input name="username" type="text" id="username" class="coucou"> 
+                    {{form_widget(form)}}
+                    {#<input type="hidden" id="recaptchaResponse" name="g-recaptcha-response">#}
+                    <div id="g-recaptcha-v2"></div>
+                    <button type="submit" class="btn btn-primary mt-3">
+                        <i class="far fa-paper-plane"></i>
+                        Envoyer
+                    </button>
+                {{form_end(form)}}
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    <script>
+        $('.coucou').hide();
+        var onloadCallback = function() {
+            grecaptcha.render('g-recaptcha-v2', {
+            'sitekey' : '6LdAoLQZAAAAANmSJmkMkblSrH-i04PWJztlLvBY'
+            });
+        };
+    </script>
+{% endblock %}    

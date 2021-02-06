@@ -1,0 +1,58 @@
+    /**  Publications  **/
+
+    #cardsPublication a{
+        text-decoration: none;
+        color: inherit;
+    }
+    .card {
+        background-color: #e9ecef;
+        transition: all 0.4s ease-out;
+        border-color: #e9ecef;
+    }
+    .card-title {
+        font-weight: bold;
+    }
+    .card:hover{
+        background-color: darkgrey !important;  
+    }
+
+    /** publication de category actu/event **/
+
+    .categoryActualite, .categoryEvenement {
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+        margin-top: 15px;
+    }
+    .categoryActualite:after, .categoryEvenement:after,
+    .categoryActualite:before, .categoryEvenement:before {
+        content: "";
+        position: absolute;
+        overflow: hidden;
+        width: 50%;
+        height: 2px;
+        top: 51%;
+        background-color: lightgrey;
+    }
+    .categoryActualite:before,  .categoryEvenement:before {  
+        margin-left: -50%;
+        text-align: right;
+    }
+
+    .categoryActualite span, .categoryEvenement span {
+        white-space: nowrap;
+        padding: 0px 10px;
+        padding: 0 10px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    /* evenement */
+
+    .evenementAnnule {
+        padding-top: 10px;
+        color: #C41C00;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }

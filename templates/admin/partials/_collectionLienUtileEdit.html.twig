@@ -1,0 +1,28 @@
+{% block _publication_liens_utiles_widget %}
+    {{ form_widget(form) }}
+    <input type="hidden" id="widgets-lien-counter" value="0">
+    <button type="button" id="add-lien" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        Ajouter un lien
+    </button>
+{% endblock %}
+
+{% block _publication_liens_utiles_entry_row %}
+    {{ form_widget(form) }} 
+{% endblock %}
+
+{% block _publication_liens_utiles_entry_widget %}
+    <div class="form-group" id="block_{{id}}">
+        <div class="row">
+            <div class="col-11 pr-2">
+                {{ form_errors(form.title) }}   
+                {{ form_widget(form.title) }}
+                {{ form_errors(form.url) }}
+                {{ form_widget(form.url) }}
+            </div>
+            <div class="col-1 d-flex p-0">
+                <button type="button" data-action="delete" data-target="#block_{{id}}" class="btn btn-danger"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

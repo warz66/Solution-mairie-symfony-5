@@ -1,0 +1,172 @@
+{% if gaResults is iterable %}
+    {% for key, gaResult in gaResults %}
+        <div class="row text-center mt-5">
+            <div class="col">
+                <h3 class="my-4 text-left">{{key}}</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="align-middle">Nb d'utilisateurs</th>
+                            <th class="align-middle">Nb de sessions</th>
+                            <th class="align-middle">Taux de rebond</th>
+                            <th class="align-middle">Nb de pages vues</th>
+                            <th class="align-middle">Nb moyen de page vue par session</th>
+                            <th class="align-middle">% de nouvelles visites</th>
+                            <th class="align-middle">Durée de la session</th>
+                            <th class="align-middle">Durée moyenne sur une page</th>
+                            <th class="align-middle">Temps de chargement moyen d'une page</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="font-weight-bold">
+                            <td>
+                                {{gaResult.users}}
+                            </td>
+                            <td>
+                                {{gaResult.sessions}}
+                            </td>
+                            <td>
+                                {{gaResult.bounceRate|round(2, 'floor')}}
+                            </td>
+                            <td>
+                                {{gaResult.pageViews}}
+                            </td>
+                            <td>
+                                {{gaResult.pageViewsPerSession|round(2, 'floor')}}
+                            </td>
+                            <td>
+                                {{gaResult.percentNewVisits|round(2, 'floor')}}
+                            </td>
+                            <td>
+                                {{gaResult.avgSessionDuration|round(0, 'floor')|date('i:s', '+00:00 GMT')}}
+                            </td>
+                            <td>
+                                {{gaResult.avgTimeOnPage|round(0, 'floor')|date('i:s', '+00:00 GMT')}}
+                            </td>
+                            <td>
+                                {{gaResult.avgPageLoadTime|round(2, 'floor')}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% if gaResult.urlPerViews is not empty %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-left align-middle">Url les plus visionnées</th>
+                                <th class="text-right align-middle">Nombre de vue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for urlPerView in gaResult.urlPerViews %}
+                                <tr class="font-weight-bold">
+                                    <td class="text-left">
+                                        <a href="{{urlPerView.dimensions.pagepath}}" rel="noopener" target="_blank">{{urlPerView.dimensions.pagepath}}</a>
+                                    </td>
+                                    <td class="text-right">
+                                        {{urlPerView.metrics.pageViews}}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-left align-middle">Source du trafic</th>
+                                    <th class="text-right align-middle">Nombre d'utilisateurs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for traficSource in gaResult.traficSourcePerUsers %}
+                                    <tr class="font-weight-bold">
+                                        <td class="text-left">
+                                            {{traficSource.dimensions.channelGrouping}}    
+                                        </td>
+                                        <td class="text-right">
+                                            {{traficSource.metrics.users}} 
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-left align-middle">Catégorie d'appareil</th>
+                                    <th class="text-right align-middle">Nombre d'utilisateurs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for deviceCategory in gaResult.deviceCategoryPerUsers %}
+                                    <tr class="font-weight-bold">
+                                        <td class="text-left">
+                                            {{deviceCategory.dimensions.deviceCategory}}    
+                                        </td>
+                                        <td class="text-right">
+                                            {{deviceCategory.metrics.users}} 
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-left align-middle">Ville (Zone géographique)</th>
+                                    <th class="text-right align-middle">Nombre d'utilisateurs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for city in gaResult.cityPerUsers %}
+                                    <tr class="font-weight-bold">
+                                        <td class="text-left">
+                                            {{city.dimensions.city}}    
+                                        </td>
+                                        <td class="text-right">
+                                            {{city.metrics.users}} 
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-left align-middle">Mots-clés</th>
+                                    <th class="text-right align-middle">Nombre de sessions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for keyword in gaResult.keywordPerSessions %}
+                                    <tr class="font-weight-bold">
+                                        <td class="text-left">
+                                            {{keyword.dimensions.keyword}}    
+                                        </td>
+                                        <td class="text-right">
+                                            {{keyword.metrics.sessions}} 
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    {% endfor %}
+{% else %}
+    <h4 class="text-danger font-weight-bold text-center">Une erreur est survenue entre l'application et l'api Google Analytics :</h4>
+    <p class="p-4">{{ gaResults }}</p>
+{% endif %}

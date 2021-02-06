@@ -1,0 +1,29 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
+
+fos_ck_editor:
+    default_config: main_config
+    #base_path: "build/ckeditor"
+    #js_path:   "build/ckeditor/ckeditor.js"
+    configs:
+        main_config:
+            #stylesSet: main_styles
+            language: fr
+            toolbar:
+                - { name: "styles", items: ['Paste','Undo', 'Redo', '-','Bold', 'Italic', 'Underline', 'Strike', 'Blockquote', '-', 'Link', '-', 'RemoveFormat', '-', 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Image', 'Table', 'HorizontalRule', '-', 'Styles', 'Format','Font','FontSize', '-', 'TextColor', 'BGColor', 'Source'] }
+            extraPlugins: "pastefromgdocs"
+            filebrowserBrowseRoute: elfinder
+            filebrowserBrowseRouteParameters: []
+            #extraPlugins: "image2"
+        ip_config:
+            language: fr
+            toolbar:
+                - { name: "styles", items: ['Undo', 'Redo', '-','Bold', 'Italic', 'Underline', 'Strike', 'Blockquote', '-', 'Link', '-', 'RemoveFormat', '-', 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'HorizontalRule', '-', 'Styles', 'Format','Font','FontSize', '-', 'TextColor', 'BGColor', 'Source'] }
+            extraPlugins: "confighelper , pastefromgdocs"
+    #styles:
+        #main_styles:
+            #- { name: 'Paragraph', element: 'p', styles: { padding: '100px', color: 'green' } }

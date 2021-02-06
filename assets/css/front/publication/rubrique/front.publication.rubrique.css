@@ -1,0 +1,228 @@
+    /* Header Rubrique/page */ 
+
+    #headerRubrique {
+        position:relative;
+        text-align: center;
+    }
+    #headerRubrique img{
+        width:100%;
+        height: 390px;
+        object-fit: cover;
+    }
+    #headerRubriqueText {
+        position: absolute;
+        width: 75%;
+        top: 93.5%; left: 50%;
+        transform: translate(-50%, 0%);
+        border: solid 1px rgb(15,15,15);
+        font-weight: bold;
+        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        overflow: hidden;
+    }
+    #headerRubriqueText :nth-child(1) {
+        font-size:25px;
+        background-color: rgb(15,15,15);
+        color: rgba(255,255,255,0.95);
+        font-family: 'Nouvelle Vague';
+        padding: 5px;
+    }
+    #headerRubriqueText :nth-child(2) {
+        color: black;
+        padding: 20px 40px;
+        background-color: white;
+    }
+    @media (max-width: 575px) {
+        #headerRubriqueText {
+            width: 90%;    
+        }
+        #headerRubrique {
+            padding:0;
+        }
+    }
+
+    /* enfants de la rubrique */
+
+    #childsRubrique a{
+        text-decoration: none;
+        color: inherit;
+    }
+    #childsRubrique .card {
+        background-color: #e9ecef;
+        transition: all 0.4s ease-out;
+        border-color: #e9ecef;
+    }
+    #childsRubrique .card-title {
+        font-weight: bold;
+    }
+    #childsRubrique .card:hover{
+        background-color: darkgrey !important;  
+    }
+
+    #childsRubrique .card-img-top {
+        /*height: 21vh;
+        object-fit: cover;*/
+        /*border-radius: 0;*/
+    }
+
+    /* Infos complémentaires */
+
+    .arrow-down {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0; 
+        height: 0; 
+        border-left: 30px solid transparent;
+        border-right: 30px solid transparent;
+        border-top: 30px solid white;
+    }
+
+    #arrow-down-bottom {
+        border-top-color: #e9ecef;
+        bottom: -40px;
+    }
+
+    #arrow-down-top {
+        top: 10px;
+    }
+    
+    #extraInfos {
+        position: relative;
+        background-color: #e9ecef;
+        color: rgba(0,0,0,1);
+    }
+
+    #extraInfos a{
+        text-decoration: none;
+        color:inherit;
+    }
+
+    #extraInfos a:hover{
+        color: #FF5722; /*#C41C00*/;
+    }
+
+    #extraInfos .h5 {
+        font-weight:bold;
+        text-align: center;
+        padding-bottom: 10px;
+        margin-right: 18px;
+    }
+
+    /* en lien avec la rubrique */
+
+    /*#enLien {
+        position : relative;
+    }*/
+
+    /* actualité, evenement */ 
+
+    .actualite, .evenement {
+        margin-bottom: 40px;
+        background-color: transparent;
+    }
+
+    .actualite a, .evenement a {
+        text-decoration: none;
+        color: black;
+    }
+
+    .actualite a:hover, .evenement a:hover {
+        color: #FF5722;
+        transition: color 0.1s;
+    }
+
+    @media (max-width: 575px) {
+       .actualite, .evenement {
+        margin-bottom: 60px;
+        } 
+        .actualite .card-img-top,
+        .evenement .card-img-top {
+            height: 25vh !important;
+        }
+    }
+
+    .actualite .card,
+    .evenement .card {
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        text-align: center;
+    }
+
+    .actualite .card-img-top,
+    .evenement .card-img-top {
+        height: 21vh;
+        object-fit: cover;
+        border-radius: 0;
+    }
+
+    .actualite .card-title,
+    .evenement .card-title {
+        font-weight: bold;
+    }
+
+    .categoryActualite, .categoryEvenement {
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+        margin-top: 15px;
+    }
+    .categoryActualite:after, .categoryEvenement:after,
+    .categoryActualite:before, .categoryEvenement:before {
+        content: "";
+        position: absolute;
+        overflow: hidden;
+        width: 50%;
+        height: 2px;
+        top: 51%;
+        background-color: lightgrey;
+    }
+    .categoryActualite:before,  .categoryEvenement:before {  
+        margin-left: -50%;
+        text-align: right;
+    }
+
+    .categoryActualite span, .categoryEvenement span {
+        white-space: nowrap;
+        padding: 0px 10px;
+        padding: 0 10px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    #enLien h4 {
+        font-weight: bold;
+        color: black;
+    }
+
+    #moreActuEvent {
+        display: flex;
+        justify-content:center;
+        padding: 32px 0px;
+        text-decoration: none;
+        width:100%;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    #moreActuEvent a {
+        padding: 0px 40px;
+        text-decoration: none;   
+        color: black;
+    }
+
+    #moreActuEvent a:hover {
+        color: #FF5722;
+        transition: color 0.2s;
+    }
+
+    /* evenement */
+
+    .evenementAnnule {
+        padding-top: 10px;
+        color: #C41C00;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }

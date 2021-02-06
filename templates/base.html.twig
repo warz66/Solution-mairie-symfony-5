@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="robots" content="noindex">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Exemple d'un site de mairie, institutionnelle, communautaire, créer avec une solution sur mesure.">
+        {#<link rel="icon" type="image/png" href="logo.png" />#}
+        <title>{% block title %}{% endblock %}</title>
+        {{ encore_entry_link_tags('css/front.app') }}
+        {#<link rel="stylesheet" href="/css/general.css">
+        <link rel="stylesheet" href="/css/header.css">
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/bootstrap.united.min.css">
+        <link rel="stylesheet" href="/css/fa/all.min.css">
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet" as="style">#}
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        
+        {% if chcookieconsent_isCookieConsentSavedByUser() == false or app.request.attributes.get('_route') == 'mentions-legales' %}
+            {% include "@CHCookieConsent/cookie_consent_styling.html.twig" %}
+            {{ render_esi(path('ch_cookie_consent.show', { 'locale' : app.request.locale })) }}
+        {% endif %}
+        
+        {% set colorItemsActualiteCategory = {'Appel à participation' : '#3E2723', 'Associations' : '#FF5722', 'Cadre de vie' : '#FF5722', 'Campagne d\'informations' : '#3E2723', 'Commémoration' : '#775447', 'Concertation' : '#3E2723', 'Conseils de quartier' : '#3E2723', 'Culture' : '#775447', 'Découvrir notre ville' : '#775447', 'Démarches et formalités' : '#FF5722', 'Démocratie participative' : '#C41C00', 'Déplacements' : '#FF5722', 'Développement durable' : '#C41C00', 'Economie' : '#C41C00','Education' : '#FFAB40', 'Elections' : '#C41C00', 'Emploi' : '#FF5722', 'Enfance' : '#FFAB40', 'Enfance et éducation' : '#FFAB40', 'Etudiants' : '#FFAB40', 'Gastronomie' : '#775447', 'Handicap' : '#FF5722', 'International' : '#775447', 'Loisirs' : '#FFAB40', 'Marchés publics' : '#C41C00', 'Patrimoine' : '#775447', 'Professionnels' : '#FF5722', 'Projets urbains' : '#C41C00', 'Quartiers' : '#3E2723', 'Santé' : '#FF5722', 'Seniors' : '#FF5722', 'Solidarité' : '#FF5722', 'Sport' : '#FFAB40', 'Stationnement' : '#FF5722', 'Tourisme' : '#775447', 'Urbanisme' : '#C41C00', 'Vie municipale' : '#C41C00'} %}
+
+        {#{% set codecouleurs = ['#3E2723', '#C41C00', '#FFAB40', '#775447', '#FF5722' %}#}
+
+        {% set colorItemsEvenementCategory = {'Animation' : '#FF5722', 'Cinéma' : '#C41C00', 'Concert' : '#FFAB40', 'Conférence' : '#3E2723', 'Danse' : '#FFAB40', 'Exposition' : '#3E2723', 'Festival' : '#FF5722', 'Livre' : '#FFAB40', 'Musique' : '#C41C00', 'Salon' : '#3E2723', 'Solidarité' : '#775447', 'Spectacle' : '#FF5722', 'Sport' : '#775447' , 'Théâtre' : '#FFAB40'} %}
+        
+        {#{% include 'partials/header.html.twig' %}#}
+        {{render(controller('App\\Controller\\HeaderController::header'))}}
+
+        {% block body %}{% endblock %}
+
+        {{render(controller('App\\Controller\\FooterController::footer'))}}
+        {#{% include 'partials/footer.html.twig' %}#}
+
+        <span id="retourHaut"><i class="fas fa-arrow-up"></i></span>
+
+        {#<script src="/js/hinclude.js"></script>#}
+        {{ encore_entry_script_tags('js/front.app') }}
+        {#<script src="/js/jquery-3.5.0.min.js"></script>
+        <script src="/js/popper.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/general.js" ></script>
+        <script src="/js/header.js" ></script>#}
+        <!-- Google Analytics -->
+        {% if (chcookieconsent_isCategoryAllowedByUser('analytics') == true) %}
+            <script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+                ga('create', 'UA-176518018-1', 'auto');
+                ga('set', 'anonymizeIp', true);
+                ga('send', 'pageview');
+                window['ga-disable-UA-176518018-1'] = false;
+            </script>
+        {% elseif (chcookieconsent_isCategoryAllowedByUser('analytics') == false) and (chcookieconsent_isCookieConsentSavedByUser() == true) %}
+            <script>
+                const GA_COOKIE_NAMES = ['_gid', '_ga', '_gat'];
+                window['ga-disable-UA-176518018-1'] = true;
+                GA_COOKIE_NAMES.forEach(cookieName => Cookies.remove(cookieName));
+                /*GA_COOKIE_NAMES.forEach(cookieName => Cookies.remove(cookieName, { path: '/', domain:'.web-solution-mairie.fr' }));*/
+            </script>
+        {% endif %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

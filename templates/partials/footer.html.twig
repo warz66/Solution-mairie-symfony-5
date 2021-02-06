@@ -1,0 +1,42 @@
+<div class="container-fluid container-xl my-5">
+    <div class="row d-flex align-items-center" id="infoFooter">
+        <div class="col-md-4" id="divVilleFooter">
+            <div>
+                <a href="/">
+                    <img src="/img/rsc/villePetit.png" alt="logo ville de Rossillon">
+                </a>
+            </div>
+            <div>
+                <a target="_blank" rel="noopener" href="http://maps.google.com/?q={{information.adresse}} {{information.ville}} {{information.cp}}">{{information.adresse}}<br>{{information.cp}} {{information.ville}}</a><br>Tel: {{information.telephone}}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mb-2 font-weight-bold">Retrouver nous sur :</div>
+            <div id="reseauxSociaux">
+                {% for reseauSocial in information.reseauxSociaux %}
+                    <a rel="noopener" href="{{reseauSocial.url}}" target="_blank" class="btn {{reseauSocial.icone}} fa-2x p-2" title="{{reseauSocial.nom}}"></a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('newsletter') }}" class="btn btnFooter">
+                S'inscrire à la Newsletters
+            </a>
+            <a href="{{ path('contact') }}" class="btn btnFooter">
+                Nous Contacter
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid p-0 bg-light" id="navFooter">
+    <ul class="nav py-2 justify-content-center">
+        <li class="nav-item"><a class="nav-link" href="{{ path('actualites') }}">Actualités</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('evenements') }}">Evènements</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('kiosque') }}">Kiosque</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('galeries') }}">Galeries</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('mentions-legales') }}">Mentions légales & Gestion des cookies</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('plan_site') }}">Plan du site</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('plus_infos') }}">Plus d'infos</a></li>
+    </ul>
+</div>

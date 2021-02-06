@@ -1,0 +1,151 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration de la newsletter{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css">
+    <style>
+    tr {
+        cursor: default !important;
+    }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Administration des abonnés à la newsletter</h1>
+        {{ form_start(formSubscriberAdd) }}
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-10 pr-md-0">
+                {{ form_row(formSubscriberAdd.email) }}
+            </div>
+            <div class="col-md-1 col-2 p-md-0 d-flex justify-content-center">
+                <button class="btn btn-outline-primary" type="submit" id="btnSubscriberAdd" title="ajouter" style="width: 44px; height:calc(100% - 15px);"><i class="fas fa-plus"></i></button> 
+            </div>
+        </div>
+        {{ form_end(formSubscriberAdd) }}
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-7 col-10 pr-md-0">
+                {{ form_start(formChoiceSubscribersDelete) }}
+                {{ form_row(formChoiceSubscribersDelete.email) }}
+                {{ form_end(formChoiceSubscribersDelete) }}
+            </div>
+            <div class="col-md-1 col-2 p-md-0 d-flex justify-content-center">
+                <button class="btn btn-outline-primary" id="btnSubscribersDelete" title="supprimer" style="width: 44px; height:calc(100% - 18px);"><i class="fas fa-trash"></i></button> 
+            </div>
+        </div>
+        {#<div class="row justify-content-center mb-5">
+            <button class="btn btn-primary" id="btnNonConfirmesDelete">Supprimer les inscriptions non confirmés</button>
+        </div>#}
+        <div class="row justify-content-center">
+            <div class="col">
+                <table class="table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Email</th>
+                            <th class="text-center align-middle"><span class="d-block">Confirmation d'inscription</span> <button class="btn btn-primary" id="btnNonConfirmesDelete">Supprimer les non confirmés</button></th>
+                            <th class="text-center align-middle">Date d'inscription</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subscriber in subscribers %}
+                            <tr data-id='{{ subscriber.id }}'>
+                                <td class="align-middle text-center">{{subscriber.email}}</td>
+                                <td class="align-middle text-center">
+                                    {% if subscriber.confirmation %}
+                                        Confirmé
+                                    {% else %}
+                                        Non confirmé
+                                    {% endif %} 
+                                </td>
+                                <td class="align-middle text-center">{{subscriber.createdAt|date("d/m/y H:i")}}</td>
+                                <td class="align-middle text-center">
+                                    <button data-id='{{ subscriber.id }}' data-email='{{ subscriber.email }}' class="btn btn-outline-primary btnDelete" title="supprimer" style="width: 44px;"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+        <div class="text-center">
+            {{ knp_pagination_render(subscribers) }}
+        </div>   
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
+    <script>
+
+        $('select#formSubscribersDelete_email').selectize({
+            placeholder: 'Ici vous pouvez désinscrire des abonnés.'
+        });
+
+        $('#btnSubscribersDelete').click(function(e) {
+            bootbox.dialog({
+                message: "Êtes-vous sûr de vouloir effectuer cette opération ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                $('form[name="formSubscribersDelete"').submit();
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnDelete').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                message: "Êtes-vous sûr de vouloir supprimer cet abonné: <strong>"+$(this).data('email')+"</strong>",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/newsletter/abonne/'+id+'/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('#btnNonConfirmesDelete').click(function(e) {
+            bootbox.dialog({
+                message: "Êtes-vous sûr de vouloir supprimer tous les inscrits non confirmés ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/newsletter/inscritsnonconfirmes/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

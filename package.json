@@ -1,0 +1,38 @@
+{
+    "devDependencies": {
+        "@fancyapps/fancybox": "^3.5.7",
+        "@symfony/webpack-encore": "^0.29.0",
+        "autoprefixer": "^9.7.6",
+        "bootbox": "^5.4.0",
+        "bootstrap": "^4.5.3",
+        "ckeditor": "^4.12.1",
+        "core-js": "^3.0.0",
+        "imagesloaded": "^4.1.4",
+        "infinite-scroll": "^3.0.0",
+        "jquery": "^3.5.1",
+        "jquery-bridget": "^2.0.1",
+        "masonry-layout": "^4.2.2",
+        "popper": "^1.0.1",
+        "popper.js": "^1.16.1",
+        "postcss-loader": "^3.0.0",
+        "regenerator-runtime": "^0.13.2",
+        "scriptjs": "^2.5.9",
+        "webpack-notifier": "^1.6.0"
+    },
+    "license": "UNLICENSED",
+    "browserslist": [
+        "defaults"
+    ],
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "jquery-validation": "^1.19.2",
+        "js-cookie": "^2.2.1",
+        "slick-carousel": "^1.8.1"
+    }
+}

@@ -1,0 +1,87 @@
+/* info footer */
+
+#infoFooter {
+    text-align: center;
+    color: black;
+}
+
+#divVilleFooter {
+    font-weight: bold;
+}
+
+#divVilleFooter img {
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+#divVilleFooter a {
+    color: black;
+}
+
+#divVilleFooter a:hover {
+    transition: color 0.2s;
+    text-decoration: none;
+    color: #e95420;
+}
+
+#reseauxSociaux a {
+    color:black;
+}
+
+#reseauxSociaux a:focus {
+    box-shadow: none;
+}
+
+a.btnFooter{
+    margin:7px 5px;
+    width: 80%;
+    padding: 7px;
+    border-radius:30px;
+    font-weight:bold;
+    background-color: rgba(0, 0, 0, 0.89);
+    color: white !important;
+    border:none;
+    box-shadow: 0 2.5px 7.5px 0px rgba(0,0,0,0.6);
+}
+
+/*a.btnFooter:hover {
+    animation: floatBtn 0.3s ease-out both;
+}
+
+@keyframes floatBtn {
+    0% {
+        box-shadow: 0 2.5px 7.5px 0px rgba(0,0,0,0.6);
+        transform: translatey(0px);
+    }
+    100% {
+        box-shadow: 0 12.5px 7.5px 0px rgba(0,0,0,0.2);
+        transform: translatey(-5px);
+    }
+}*/
+
+@media (max-width: 767px) {
+    #infoFooter a.textBtnFooter {
+        width: 260px;
+    }
+    #infoFooter > div {
+        margin-bottom: 20px;
+    }
+}
+
+/* nav footer */
+
+#navFooter a{
+    font-size: 14px;
+    color:inherit;
+}
+
+#navFooter a:hover{
+    color:#FF5722;
+}
+
+@media (max-width: 767px) {
+    #navFooter li {
+        width: 100%;
+        text-align:center;
+    }
+}

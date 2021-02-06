@@ -1,0 +1,59 @@
+{% if error is defined %}
+    <div class="container">
+        <h5 class="text-danger font-weight-bold">Problème pour l'application à charger les données :</h5>
+        <p class="ml-3">{{error}}</p>
+
+    </div>
+{% else %}
+    {% if reportList.status is defined %}
+        <div class="container">
+            <h5 class="text-danger font-weight-bold">Problème pour l'application à charger les données de la liste :</h5>
+            <p class="ml-3">{{reportList|json_encode}}</p>
+        </div>
+    {% else %}
+        <h3 class="my-4 text-left">Liste :</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    {% for key in reportList|keys %}
+                        <th>{{key}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="font-weight-bold">
+                    {% for report in reportList %}
+                        <td>{{report}}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% if reportCampaigns.status is defined %}
+        <div class="container">
+            <h5 class="text-danger font-weight-bold">Problème pour l'application à charger les données des campaigns :</h5>
+            <p class="ml-3">{{reportCampaigns|json_encode}}</p>
+        </div>
+    {% else %}
+        <h3 class="my-4 text-left">Campagne :</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        {% for key in reportCampaigns[0]|keys %} {# trouver mieux #}
+                            <th>{{key}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reportCampaign in reportCampaigns %}
+                        <tr class="font-weight-bold">
+                            {% for report in reportCampaign %}
+                                <td>{{report}}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    {% endif %}
+{% endif %}

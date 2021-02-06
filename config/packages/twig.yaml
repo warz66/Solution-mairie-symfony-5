@@ -1,0 +1,17 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    form_themes: ['bootstrap_4_layout.html.twig']
+    globals:
+        #galerie_content_path: '%galerie_content_path%'
+        galerie_cover_path: '%galerie_cover_path%'
+        publication_cover_path: '%publication_cover_path%'
+        carrousel_cover_path: '%carrousel_cover_path%'
+        ressources_path: '%ressources_path%'
+        kiosque_thumbnails_path: '%kiosque_thumbnails_path%'
+        kiosque_path: '%kiosque_path%'
+        nom_mairie: '%nom_mairie%'
+        mailchimp_url: '%mailchimp_url%'
+        google_recaptcha_site_key: '%google_recaptcha_site_key%'
+        google_analytics_url: '%google_analytics_url%'
+
+

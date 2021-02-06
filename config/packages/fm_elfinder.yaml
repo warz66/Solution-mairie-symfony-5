@@ -1,0 +1,34 @@
+fm_elfinder:
+    assets_path: /assets # chemin des fichiers JS à test
+    instances:
+        default:
+            locale: fr # Langue
+            editor: ckeditor # Editeur utilisé
+            fullscreen: true # Taille d'affichage
+            theme: smoothness # Thème à utiliser
+            #include_assets: true # Charge automatiquement les fichiers nécessaires
+            connector:
+                debug: false # Désactive le débug
+                roots:
+                    uploads:
+                        show_hidden: false # Masque les fichiers cachés
+                        driver: LocalFileSystem # Pilote des fichiers
+                        path: img/indatabase/elfinder_server/uploads # Chemin d'upload
+                        upload_allow: ['image/png', 'image/jpg', 'image/jpeg', 'application/pdf'] # Fichiers autorisés
+                        upload_deny: ['all'] # Fichiers interdits
+                        upload_max_size: 0.5M # Taille maximum
+
+        form:
+            locale: '%kernel.default_locale%' # defaults to current request locale
+            editor: form # other choices are tinymce or simple, and form
+            #show_hidden: false # defaults to false
+            fullscreen: true # defaults true, applies to simple and ckeditor editors
+            connector:
+                debug: false # defaults to false
+                roots:       # at least one root must be defined
+                    uploads:
+                        driver: LocalFileSystem
+                        path: uploads
+                        upload_allow: ['image/png', 'image/jpg', 'image/jpeg']
+                        upload_deny: ['all']
+                        upload_max_size: 2M                    

@@ -1,0 +1,15 @@
+{% extends '@!CHCookieConsent/cookie_consent.html.twig' %}
+
+{% block title %}
+    <span class="ch-cookie-consent__close"><i class="fas fa-times"></i></span>
+    <h5 class="ch-cookie-consent__title">{{ 'ch_cookie_consent.title'|trans({}, 'CHCookieConsentBundle') }}</h5>
+{% endblock %}
+
+{#{% block intro %}
+    <p class="ch-cookie-consent__intro">{{ 'ch_cookie_consent.intro'|trans({}, 'CHCookieConsentBundle') }}</p>
+{% endblock %}#}
+
+{% block read_more %}
+    <a class="ch-cookie-consent__read-more" href="{% block read_more_link %}{{ path('mentions-legales') }}#MagementPersonalData{% endblock %}">{{ 'ch_cookie_consent.read_more'|trans({}, 'CHCookieConsentBundle') }}</a>
+{% endblock %}
+

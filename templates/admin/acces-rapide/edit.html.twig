@@ -1,0 +1,170 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Edition d'un objet de l'accès rapide{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css">
+<link rel="stylesheet" href="/css/bootstrap-iconpicker.min.css"/>
+<style>
+
+    .selectize-dropdown-content {
+        cursor:pointer;
+    }
+
+    .selectize-dropdown .optgroup-header {
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+    }
+
+    .selectize-dropdown .optgroup .option {
+        padding-left: 20px;
+    }
+
+    .selectize-input {
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .selectize-input.focus{  
+        border-color: #f4ad94;
+        outline:0;
+        box-shadow: 0 0 0 0.2rem rgba(233, 84, 32, 0.25);
+    }
+
+    .table-icons .btn {
+        min-height: 50px;
+        min-width: 55px; 
+    }
+    
+    .popover .search-control {
+        min-width:100% !important;
+    }
+
+    #iconpicker {
+        border-color: #ced4da !important;
+    }
+
+    .table-icons i{
+        font-size: 30px;
+    }
+
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Édition de l'objet accès rapide {{form.vars.value.title}}</h1>
+        {{ form_start(form) }}
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                {{form_row(form.title)}}
+                {{form_row(form.lien_publication)}}
+                <div class="form-group">
+                    <label class="font-weight-bold" for="acces_rapide_objet_icone">Icône</label>
+                    <div class="input-group">
+                        {{form_errors(form.icone)}}
+                        {{form_widget(form.icone)}}
+                        <span class="input-group-append">
+                            <button id="iconpicker" class="btn border"></button>
+                        </span>
+                    </div>
+                </div>
+            </div>  
+        </div>
+        <div class="row my-5">
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <button id="submit" type="submit" class="btn btn-primary mr-2">
+                        <span id="b-e-default"><i class="far fa-save"></i></span> 
+                        <span id="b-e-loading" class="spinner-border spinner-border-sm" style="display:none;" role="status"></span>
+                        &nbsp;Enregistrer les modifications
+                    </button>
+                    <a href="{{ path('admin_acces-rapide_index') }}" class="btn btn-danger ml-2" id="cancel">
+                        <i class="fas fa-undo-alt"></i>&nbsp;&nbsp;Annuler les modifications
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/bootstrap-iconpicker.bundle.min.js"></script>
+    <script>
+
+        // gestion du lien interne avec selectize
+        
+        $('select#acces_rapide_objet_lien_publication').selectize({
+            render: {
+                item: function (data, escape) {
+                    if (data.statut == false) {
+                        return "<div class='item text-danger' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + " <i>(non publié ou à la corbeille)</i>" + "</div>"
+                    } else {
+                        return "<div class='item' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + "</div>"
+                    }
+                },
+                option: function (data, escape) {
+                    if (data.statut == false) {
+                        return "<div class='option text-danger' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + " <i>(non publié ou à la corbeille)</i>" + "</div>"
+                    } else {
+                        return "<div class='option' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + "</div>"
+                    }
+                },
+                optgroup_header: function(item, escape) {
+                    let value;
+                    switch(item.value) {
+                        case 'sous-rubrique': value ="Sous-rubriques"; break;
+                        case 'page' : value = "Pages"; break;
+                        default: value = item.value; 
+                    }
+                    return '<div class="optgroup-header font-weight-bold">'+value+'</div>';     
+                }
+            }
+        });
+
+        $('#iconpicker').iconpicker({
+            align: 'center',
+            cols: 8,
+            rows: 5,
+            icon: $('#acces_rapide_objet_icone').val(),
+            selectedClass: 'btn-primary',
+            unselectedClass: '',
+            searchText: 'Choisissez une icône.'
+        });
+
+        $('#iconpicker').on('change', function(e) {
+            if (e.icon === 'empty') {
+               $('#acces_rapide_objet_icone').val('');
+            } else {
+                $('#acces_rapide_objet_icone').val(e.icon)
+            }
+        });
+
+        $('#iconpicker').click(function() { // permet de desactiver l'autocapitalize sur mobile.
+            $('.popover-body input[type=text]').attr('autocapitalize', 'off');
+        }); 
+        
+        /*$('#iconpicker').click(function(){
+            $('.popover i').addClass('fa-2x')
+            recursiveBtnIconePicker();
+        });
+
+        function recursiveBtnIconePicker() {
+            $('.popover .btn-next').on("click", function(){
+                $('.popover i').addClass('fa-2x');
+                recursiveBtnIconePicker();
+            });
+            $('.popover .btn-previous').on("click", function(){
+                $('.popover i').addClass('fa-2x');
+                recursiveBtnIconePicker();
+            });
+        }*/
+
+        $(document).ready(function() {
+            $('#submit').prop('disabled', false);
+        });
+    </script>
+{% endblock %}

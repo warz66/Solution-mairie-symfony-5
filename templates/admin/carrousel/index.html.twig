@@ -1,0 +1,141 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration du carrousel{% endblock %}
+
+{% block stylesheets %}
+<style>
+.container {
+    min-width: 90%;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Administration du carrousel</h1>
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-10">
+                        <div class="card bg-light bg-white">
+                            <div class="card-header text-center bg-primary">
+                                <h4 class="card-title text-white">
+                                    <i class="fas fa-tasks"></i>
+                                    Emplacement dans le carrousel
+                                </h4>
+                            </div>
+                            <div class="card-body"> 
+                                {{ form_start(formCarrousel) }}
+                                {{ form_widget(formCarrousel) }}
+                                <div class="d-flex justify-content-center">
+                                    <button id="submit" type="submit" class="btn btn-primary mr-2">
+                                        <span id="b-e-default"><i class="far fa-save"></i></span> 
+                                        <span id="b-e-loading" class="spinner-border spinner-border-sm" style="display:none;" role="status"></span>
+                                        &nbsp;Valider
+                                    </button>
+                                </div>
+                                {{ form_end(formCarrousel) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 d-lg-flex align-items-center justify-content-center d-none">
+                        <i class="fas fa-arrow-left fa-3x"></i>
+                    </div>
+                    <div class="col-lg-2 d-flex align-items-center justify-content-center d-lg-none m-3">
+                        <i class="fas fa-arrow-up fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <table class="table table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Image</th>
+                            <th class="text-center align-middle">Titre</th>
+                            <th class="text-center align-middle">Introduction</th>
+                            <th class="text-center align-middle"><a href="{{ path('admin_carrousel_new') }}" class="btn btn-outline-primary" style="width: 44px" title="Nouvel objet carrousel"><i class="fas fa-plus"></i></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for carrouselObjet in carrouselObjets %}
+                            <tr data-id='{{ carrouselObjet.id }}'>
+
+                                {% if carrouselObjet.coverImage is not null %}
+                                    {% if 'picsum' in carrouselObjet.coverImage %} {# à virer une fois en prod #}
+                                        <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="text-center align-middle" title="Editer">
+                                            <img style="max-width:300px;height:auto;" src="{{carrouselObjet.coverImage}}" alt="">
+                                        </td>
+                                    {% else %}
+                                        <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="text-center align-middle" title="Editer">
+                                            <img src="{{(carrousel_cover_path ~ carrouselObjet.coverImage) | imagine_filter('carrousel_cover_index_thumb')}}" alt="">
+                                        </td>
+                                    {% endif %}
+                                {% elseif carrouselObjet.lienPublication is not null %}
+                                    {% if 'picsum' in carrouselObjet.lienPublication.coverImage %} {# à virer une fois en prod #}
+                                        <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="text-center align-middle" title="Editer">
+                                            <img style="max-width:300px;height:auto;" src="{{carrouselObjet.lienPublication.coverImage}}" alt="">
+                                        </td>
+                                    {% else %}
+                                        <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="text-center align-middle" title="Editer">
+                                            <img src="{{(publication_cover_path ~ carrouselObjet.lienPublication.coverImage) | imagine_filter('carrousel_cover_index_thumb')}}" alt="">
+                                        </td>
+                                    {% endif %}
+                                {% else %}
+                                    <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="text-center align-middle" title="Editer">Sans image</td>
+                                {% endif %}
+
+                                {% if carrouselObjet.title is not null %}
+                                    <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="align-middle text-center" title="Editer">{{carrouselObjet.title}}</td>
+                                {% elseif carrouselObjet.lienPublication is not null %}
+                                    <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="align-middle text-center" title="Editer">{{carrouselObjet.lienPublication.title}}</td>
+                                {% else %}
+                                    <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="align-middle text-center" title="Editer">Sans titre, img: {{carrouselObjet.coverImage|origineName}}</td>
+                                {% endif %}
+
+                                {% if carrouselObjet.introduction is not null %}
+                                    <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="align-middle text-center" title="Editer">{{carrouselObjet.introduction}}</td>
+                                {% elseif carrouselObjet.lienPublication is not null %}
+                                    <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="align-middle text-center" title="Editer">{{carrouselObjet.lienPublication.introduction}}</td>
+                                {% else %}
+                                    <td onclick="document.location = '{{ path('admin_carrousel_edit',{'id': carrouselObjet.id }) }}';" class="align-middle text-center" title="Editer">Sans introduction</td>
+                                {% endif %}
+
+                                <td class="align-middle text-center">
+                                    <button data-id='{{ carrouselObjet.id }}' data-title='{{ carrouselObjet.title }}' class="btn btn-outline-primary btnDelete" title="supprimer" style="width: 44px;"><i class="fas fa-fire-alt"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+        $('.btnDelete').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                message: "Êtes-vous sûr de vouloir supprimer définitivement l'objet <strong>"+$(this).data('title')+"</strong> du carrousel ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/carrousel/'+id+'/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

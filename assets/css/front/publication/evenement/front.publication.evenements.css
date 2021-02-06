@@ -1,0 +1,251 @@
+    /* présentation actu/event */
+
+    #actusEventsPresentation img {
+        width: 100%;
+        height: 390px;
+        object-fit: cover;
+    }
+
+    .imgCoverGrayscale {
+        filter: grayscale(1);       
+    }
+
+    @media (max-width: 575px) {
+        #actusEventsPresentation {
+            padding:0;
+        }
+    }
+
+    /* événements passés */
+
+    #pastEvents {
+        font-weight: bold;
+        text-align: right;
+        position: relative;
+        z-index:2;
+    }
+
+    #pastEvents a {
+        text-decoration: none;   
+        color: black;
+    }
+
+    #pastEvents a:hover {
+        color: #FF5722;
+        transition: color 0.2s;
+    }
+
+    /* banniere actu/event */
+
+    #actusEventsBanniere {
+        position: relative;
+    }
+
+    body {
+        overflow-x:hidden;
+    }
+
+    #cutCercle{
+        position: absolute;
+        width:100%;
+        height:20px;
+        top: -20px;
+        z-index:10;
+        background-color:white;
+    }
+
+    #cercle0Banniere {
+        z-index: 1;
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 90px;
+        background: white;
+        right:-5px;
+        top: -35px;
+        opacity: 1;
+    }
+
+    #cercle1Banniere {
+        z-index: 3;
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 75px;
+        background: #C41C00;
+        right:10px;
+        top: -20px;
+        opacity: 0.80;
+    }
+
+    #cercle2Banniere {
+        z-index: 2;
+        position: absolute;
+        width: 110px;
+        height: 110px;
+        border-radius: 55px;
+        background: #FFAB40;
+        top:60px;
+        right:-40px;
+        opacity: 0.80;
+    }
+
+    #divTitreActualites {
+        margin-left:250px;
+        max-width:100%;
+        background: black; 
+        opacity: 0.95;
+        color:white;
+        font-family: 'Nouvelle Vague';
+        text-align: left;
+        line-height:1;
+        font-size: 35px;
+        padding: 5px 0px 5px 30px ;
+        vertical-align: center;
+    }
+
+    @media (max-width: 960px) {
+        #divTitreActualites { 
+            width:100%;
+            margin-left:0px;
+            text-align: center;
+            padding-left:0px;
+        }
+        #actusEventsBanniere {
+            width:100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        #divTitreActualites {
+            text-align: left;
+            padding-left:16px;     
+        }
+    }
+
+    @media (max-width: 576px) {
+        #divTitreActualites { 
+            text-align: center;
+            padding-left:0px;
+        }
+        #divCercleBanniere {
+            display:none;
+        }
+        #actusEventsBanniere {
+            padding: 0px;
+        }
+    }
+
+    /* actualité, evenement */ 
+
+    .actualite, .evenement {
+        margin-bottom: 40px;
+    }
+
+    .actualite a, .evenement a {
+        text-decoration: none;
+        color: black;
+    }
+
+    .actualite a:hover, .evenement a:hover {
+        color: #FF5722;
+        transition: color 0.1s;
+    }
+
+    @media (max-width: 575px) {
+       .actualite, .evenement {
+        margin-bottom: 60px;
+        } 
+        .card-img-top {
+            height: 25vh !important;
+        }
+    }
+
+    .card {
+        border: none;
+        border-radius: 0;
+        text-align: center;
+    }
+
+    .card-img-top {
+        height: 21vh;
+        object-fit: cover;
+        border-radius: 0;
+    }
+
+    .categoryActualite, .categoryEvenement {
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+        margin-top: 15px;
+    }
+    .categoryActualite:after, .categoryEvenement:after,
+    .categoryActualite:before, .categoryEvenement:before {
+        content: "";
+        position: absolute;
+        overflow: hidden;
+        width: 50%;
+        height: 2px;
+        top: 51%;
+        background-color: lightgrey;
+    }
+    .categoryActualite:before,  .categoryEvenement:before {  
+        margin-left: -50%;
+        text-align: right;
+    }
+
+    .categoryActualite span, .categoryEvenement span {
+        white-space: nowrap;
+        padding: 0px 10px;
+        padding: 0 10px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+
+    #moreActualite, #moreEvenement {
+        text-decoration: none;
+        width:100%;
+        text-align: right;
+        font-weight: bold;
+        padding: 0px 8px;
+    }
+
+    #moreActualite a, #moreEvenement a {
+        text-decoration: none;   
+        color: black;
+    }
+
+    #moreActualite a:hover, #moreEvenement a:hover {
+        color: #FF5722;
+        transition: color 0.2s;
+    }
+
+    .evenementAnnule {
+        padding-top: 10px;
+        color: #C41C00;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .imgCoverGrayscale {
+        filter: grayscale(1);       
+    }
+
+    /* pagination */
+
+    .page-link {
+        border: none;
+        color: black;
+        border-radius: 1.5px;
+    }
+    .page-link:hover {
+        color: #FF5722;
+    }
+    .pagination .active .page-link{
+        background-color: #FF5722 !important;
+    }

@@ -1,0 +1,136 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration du Kiosque{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /**************** button on off *******************/
+    .custom-switch.custom-switch-adaptive {
+        padding-left: 0;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-label {
+        padding: 0 1.3em;
+        cursor:pointer;
+        position: relative;
+        border-radius: 1em;
+        line-height: 1.4em;
+        /*color: purple;*/
+        border: 1px solid #e45c27;
+        background-color: #f8f9fa;
+        transition: background-color 200ms;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-label::before {
+        content: none;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-label::after {
+        position: absolute;
+        background-color: #e45c27;
+        height: 1.2em;
+        top: 0.1em;
+        left: 0.1em;
+        width: 1.2em;
+        border-radius: 1em;
+        transition: left 200ms;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label {
+        /*color: #000;*/
+        background-color: #e45c27;
+        border-color: #e45c27;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label::after {
+        background-color: #fff;
+        left: calc(100% - 1.2em);
+        transform: none;
+        -webkit-transform: none;
+    }
+    .custom-switch.custom-switch-adaptive .custom-control-label:hover {
+        box-shadow: 0 0 6px 0px #e45c27;
+        transition: 0.15s
+    }
+    /*****************************************************/
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Administration du Kiosque</h1>
+        <table class="table table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="text-center align-middle">Image de couverture</th>
+                    <th class="text-center align-middle">Titre de la revue</th>
+                    <th class="text-center align-middle">Date de parution</th>
+                    <th class="text-center align-middle">En ligne</th>
+                    <th class="text-center align-middle">Visionner</th>
+                    <th class="text-center align-middle"><a href="{{ path('admin_kiosque_new') }}" class="btn btn-outline-primary" style="width: 44px" title="Nouvelle sous-rubrique"><i class="fas fa-plus"></i></a></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for kiosqueObjet in kiosqueObjets %}
+                    <tr data-id='{{ kiosqueObjet.id }}'>
+                        <td onclick="document.location = '{{ path('admin_kiosque_edit',{'id': kiosqueObjet.id }) }}';" class="text-center align-middle" title="Editer">
+                            <img src="{{(kiosque_thumbnails_path ~ kiosqueObjet.urlThumbnail) | imagine_filter('kiosque_index_thumb')}}" alt="">
+                        </td>
+                        <td onclick="document.location = '{{ path('admin_kiosque_edit',{'id': kiosqueObjet.id }) }}';" class="align-middle text-center" title="Editer">{{kiosqueObjet.title}}</td>
+                        <td onclick="document.location = '{{ path('admin_kiosque_edit',{'id': kiosqueObjet.id }) }}';" class="align-middle text-center" title="Editer">{{kiosqueObjet.parution|date("d/m/y")}}</td>
+                        <td class="align-middle text-center" style="width:17%">
+                            <div class="custom-control custom-switch custom-switch-adaptive h5" style="margin:0;">
+                                <input data-id='{{ kiosqueObjet.id }}' id="statut{{ kiosqueObjet.id }}" type="checkbox" class="custom-control-input statutCheckbox" {% if kiosqueObjet.statut %} checked {% endif %}>
+                                <label for="statut{{ kiosqueObjet.id }}" title="Publier" class="custom-control-label">&zwj;</label>
+                            </div>
+                        </td>
+                        <td class="align-middle text-center">
+                            <a href="{{ kiosque_path ~ kiosqueObjet.url }}" target="_blank" title="{{kiosqueObjet.url}}" class="btn btn-outline-primary" style="width: 44px"><i class="fas fa-book-reader"></i></a>
+                        </td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ kiosqueObjet.id }}' data-title='{{ kiosqueObjet.title }}' class="btn btn-outline-primary btnDelete" title="supprimer" style="width: 44px;"><i class="fas fa-fire-alt"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center">
+            {{ knp_pagination_render(kiosqueObjets) }}
+        </div>     
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+        $('.btnDelete').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                message: "Êtes-vous sûr de vouloir supprimer définitivement la revue <strong>"+$(this).data('title')+"</strong> ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/kiosque/'+id+'/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.statutCheckbox').click(function(e) {
+            var id = $(this).data('id');
+            var statut = $(this).prop('checked');
+            $.ajax({
+            type:'POST',
+            dataType:'JSON',
+            url: '/admin/kiosque/'+id+'/statut',
+            data:'statut='+statut,
+            success: function(result) {
+                $('#statut'+id).prop('checked',result);  
+            }});
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Galeries | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.galeries') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid container-xl mt-5" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item active">Toutes les galeries</li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container-fluid container-xl" id="galerieCards">
+        <div class="row">
+            {% for galerie in galeries %}
+                <div class="col-lg-4 col-sm-6 mb-5">
+                    <a href="{{ path( 'galerie', {'slug' : galerie.slug} ) }}">
+                        <div class="card h-100">
+                            {% if 'picsum' in galerie.coverImage %} {# à virer une fois en prod #}
+                                <img src="{{galerie.coverImage}}" alt="{{galerie.title}}" class="card-img-top">
+                            {% else %}
+                                <img src="{{(galerie_cover_path ~ galerie.coverImage) | imagine_filter('galerie_thumb')}}" alt="{{galerie.title}}" class="card-img-top">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{galerie.title}}
+                                </h5>
+                                <p class="card-text">
+                                    {{galerie.description}}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {{ knp_pagination_render(galeries) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

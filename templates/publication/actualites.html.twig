@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Actualités | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.publication.actualites') }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid container-xl mb-4" id="actusEventsPresentation">
+        <img src="/img/rsc/actualitesCover.jpg" alt="Image de couverture des actualités de la mairie de {{nom_mairie}}">
+    </div>
+
+    <div class="container-fluid container-xl mb-4" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item active">Toutes l'actualités</li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container-fluid container-xl" id="actusEventsBanniere">
+        <div id="divCercleBanniere">
+            <div id="cutCercle"></div>
+            <div id="cercle0Banniere"></div>
+            <div id="cercle1Banniere"></div>
+            <div id="cercle2Banniere"></div>
+        </div>
+        <div id="divTitreActualites">
+            ACTUALITES
+        </div>
+    </div>
+
+    <div class="container-fluid container-xl my-5 position-relative" style="z-index:2;">
+        <div class="row">
+            {% for key, new in news  %}
+                <div class="col-sm-6 col-lg-4 actualite">
+                    <a href="{{ path('publication_router', {'slug' : new.slug}) }}">
+                        <div class="card">
+                            {% if 'picsum' in new.coverImage %} {# à virer une fois en prod #}
+                                <img src="{{new.coverImage}}" alt="{{new.title}}" class="card-img-top">
+                            {% else %}
+                                <img src="{{(publication_cover_path ~ new.coverImage) | imagine_filter('publication_thumb')}}" alt="{{new.title}}" class="card-img-top">
+                            {% endif %}
+                            <div class="categoryActualite">
+                                <span {% if colorItemsActualiteCategory[new.actualite.category] is defined %} style="color: {{colorItemsActualiteCategory[new.actualite.category]}};" {% endif %}>{{new.actualite.category}}</span>
+                            </div>
+                            <span class="card-text py-1"><i>Publié le {{new.actualite.debutPublication|date('d/m/y')}}</i></span>
+                            <div class="card-body p-1">
+                                <h5 class="card-title">{{new.title}}</h5>
+                                <p class="card-text">{{new.introduction}}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>    
+            {% endfor %}
+        </div>
+        {{ knp_pagination_render(news) }}
+    </div>
+
+    <hr>
+
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

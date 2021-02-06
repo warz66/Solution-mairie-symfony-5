@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.publication.recherche') }}
+{% endblock %}
+
+{% block body %}
+
+    {#<hr>
+    <div class="my-5 text-center font-weight-bold h4">{{recherche}}</div>#}
+
+    <div class="container-fluid container-xl mt-5" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item active"><a href="{{path('actualites')}}">Recherche</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container-fluid container-xl" id="cardsPublication">
+        <div class="row">
+            {% for key, publication in publications %}
+                {% if publication | isPublication %}
+                    <div class="col-lg-4 col-sm-6 mb-5">
+                        <a href="{{ path( 'publication_router', {'slug' : publication.slug} ) }}">
+                            {#{{resultats[key]['score']}}#}
+                            <div class="card h-100 position-relative">
+                                <div class="position-absolute text-white p-3 rounded d-flex align-items-center font-weight-bold" style="background-color:#775447; height:25px;left:-15px;top:15px;">
+                                    <span class="text-center">
+                                        {% if publication.category.nom == 'actualite' %}
+                                            Actualité
+                                        {% elseif publication.category.nom == 'evenement' %}
+                                            Événement
+                                        {% elseif publication.category.nom == 'sous-rubrique' %}
+                                            Sous-rubrique
+                                        {% else %}
+                                            {{publication.category.nom|capitalize}}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                {% if 'picsum' in publication.coverImage %}
+                                    <img src="{{publication.coverImage}}" alt="{{publication.title}}" class="card-img-top">
+                                {% else %}
+                                    <img src="{{(publication_cover_path ~ publication.coverImage) | imagine_filter('publication_thumb')}}" alt="{{publication.title}}" class="card-img-top">
+                                {% endif %}
+                                {% if publication.category.nom == 'actualite' %}
+                                    <div class="categoryActualite">
+                                        <span {% if colorItemsActualiteCategory[publication.actualite.category] is defined %} style="color: {{colorItemsActualiteCategory[publication.actualite.category]}};" {% endif %}>{{publication.actualite.category}}</span>
+                                    </div>
+                                    <div class="card-text text-center py-1"><i>Publié le {{publication.actualite.debutPublication|date('d/m/y')}}</i></div>
+                                {% endif %}
+                                {% if publication.category.nom == 'evenement' %}
+                                    <div class="categoryEvenement">
+                                        <span {% if colorItemsEvenementCategory[publication.evenement.category] is defined %} style="color: {{colorItemsEvenementCategory[publication.evenement.category]}};" {% endif %}>{{publication.evenement.category}}</span>
+                                    </div>
+                                    {% if publication.evenement.statut == 1 %}<div class="text-center evenementAnnule">Attention, Evénement Annulé !</div> {% endif %}
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{publication.title}}
+                                    </h5>
+                                    {% if publication.category.nom == 'evenement' %}
+                                        <p class="card-text"><i>{{publication.evenement.subtitle}}</i></p>
+                                    {% endif %}
+                                    <p class="card-text">
+                                        {{publication.introduction}}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% elseif publication | isGalerie %}
+                    <div class="col-lg-4 col-sm-6 mb-5">
+                        <a href="{{ path( 'galerie', {'slug' : publication.slug} ) }}">
+                            <div class="card h-100 position-relative">
+                                <div class="position-absolute text-white p-3 rounded d-flex align-items-center font-weight-bold" style="background-color:#775447; height:25px;left:-15px;top:15px;">
+                                    <span class="text-center">
+                                        Galerie
+                                    </span>
+                                </div>
+                                {% if 'picsum' in publication.coverImage %} {# à virer une fois en prod #}
+                                    <img src="{{publication.coverImage}}" alt="{{publication.title}}" class="card-img-top">
+                                {% else %}
+                                    <img src="{{(galerie_cover_path ~ publication.coverImage) | imagine_filter('publication_thumb')}}" alt="{{publication.title}}" class="card-img-top">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{publication.title}}
+                                    </h5>
+                                    <p class="card-text">
+                                        {{publication.description}}
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr>
+
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

@@ -1,0 +1,56 @@
+version: '3'
+services:
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+        ports:
+            - "9200:9200"
+        environment:
+            - "discovery.type=single-node"
+            #- node.name = publications
+            - cluster.name=docker-cluster
+            - bootstrap.memory_lock=true
+            - "http.cors.allow-methods=GET"
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        volumes:
+         - dbdata01:/usr/share/elasticsearch/data
+    kibana:
+        image: docker.elastic.co/kibana/kibana:7.6.1
+        ports:
+            - "5601:5601"
+        #environment:
+        #    SERVER_NAME: kibana
+        #    ELASTICSEARCH_HOSTS: http://localhost:9200
+        #links:
+        #    - "elasticsearch"
+    db:
+        container_name: db
+        image: mysql:8.0
+        command: --default-authentication-plugin=mysql_native_password
+        volumes:
+            - dbdata02:/var/lib/mysql
+        ports:
+            - "3306:3306"    
+        environment:
+            #MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: mairie
+        labels:
+            com.symfony.server.service-prefix: 'DATABASE'    
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        depends_on: 
+            - db
+        environment:
+            PMA_HOST: db
+        ports:
+            - '8080:80'
+    mailcatcher:
+        image: schickling/mailcatcher
+        ports:
+            - '1080:1080'
+            - '1025:1025'                           
+volumes:
+    dbdata01:
+        driver: local
+    dbdata02:
+        driver: local    

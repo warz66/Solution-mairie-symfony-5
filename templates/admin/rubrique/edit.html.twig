@@ -1,0 +1,357 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Edition d'une rubrique{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css">
+<style>
+    .custom-file-input {
+        cursor: pointer;
+    }
+
+    .vich-image img {
+        margin-top: 30px;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        border-radius:0.25rem;
+    }
+
+    .vich-image a {
+        pointer-events: none;
+        cursor: default;
+    }
+
+    legend {
+        padding-top:0 !important;
+    }
+
+    #titreDiv {
+        height:250px;
+        overflow:hidden;
+    }   
+
+    #titreImage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        min-width:100%;
+        opacity:0.5;
+    }
+
+    #titreRubrique { 
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .custom-file-label {
+        overflow: hidden;        
+    }
+
+        .selectize-dropdown-content {
+        cursor:pointer;
+    }
+
+    .selectize-dropdown .optgroup-header {
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+    }
+
+    .selectize-dropdown .optgroup .option {
+        padding-left: 20px;
+    }
+
+    .selectize-input {
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .selectize-input.focus{  
+        border-color: #f4ad94;
+        outline:0;
+        box-shadow: 0 0 0 0.2rem rgba(233, 84, 32, 0.25);
+    }
+
+</style>
+{% endblock %}
+
+{% form_theme form with ['admin/partials/_collectionLienUtileExterneEdit.html.twig', 'admin/partials/_collectionRessourceEdit.html.twig',  'admin/partials/_collectionLienUtileInterneEdit.html.twig', 'admin/partials/_infosPratiquesEdit.html.twig'] %}
+
+{% block body %}
+    <div class="container">
+        <div class="mt-5 position-relative rounded" id="titreDiv">
+            {% if 'picsum' in form.vars.value.coverImage %}
+                <img id="titreImage" class="rounded" src="{{form.vars.value.coverImage}}" alt="">
+            {% else %}
+                <img id="titreImage" class="rounded" src="{{(publication_cover_path ~ form.vars.value.coverImage) | imagine_filter('publication_title_edit') }}" alt="">
+            {% endif %}
+        <h1 class="text-center m-0" id="titreRubrique">Rubrique {{form.vars.value.title}}</h1>
+        </div>
+        <hr class="mb-5 mt-5">
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-lg-6">
+                {{form_widget(form.rubrique)}}
+                {{form_row(form.title)}}
+                {{form_row(form.introduction)}}
+            </div>
+            <div class="col-lg-6">
+                {{form_row(form.imageFile)}}
+                <input id="inputImgFileName" type="hidden" data-imgfile="{{form.vars.value.coverImage}}">
+            </div>    
+        </div>
+        <hr class="mt-5 mb-5">
+        <div class='row'>
+            <div class="col-lg-6">
+                {{form_row(form.liens_utiles_externes)}}   
+            </div>
+            <div class="col-lg-6">
+                {{form_row(form.liens_utiles_internes)}}    
+            </div>
+        </div>
+        <hr class="mt-5 mb-5">
+        <div class="row">
+            <div class="col-lg-6">
+                {{form_row(form.ressources)}}
+            </div>
+        </div>
+        <hr class="mt-5 mb-5">
+        <div class="row">
+            <div class="col-lg-6">
+                {{form_row(form.infos_pratiques)}}
+            </div>
+        </div>
+        <hr class="mt-5 mb-5">
+        <div class="row my-5">
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <button disabled="true" id="submit" type="submit" class="btn btn-primary mr-2">
+                        <span id="b-e-default"><i class="far fa-save"></i></span> 
+                        <span id="b-e-loading" class="spinner-border spinner-border-sm" style="display:none;" role="status"></span>
+                        &nbsp;Enregistrer les modifications
+                    </button>
+                    <a href={% if trash %} "{{ path('admin_rubrique_trash_index') }}" {% else %} "{{ path('admin_rubrique_index') }}" {% endif %} class="btn btn-danger ml-2" id="cancel">
+                        <i class="fas fa-undo-alt"></i>&nbsp;&nbsp;Retour à l'index
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
+    <script>
+
+        // on ameliore l'input catégorie avec selectize
+
+        $('select#publication_rubrique_category').selectize({
+            placeholder: 'Veuillez choisir des catégories en lien avec la rubrique',
+        });
+
+        // gestion infos pratiques
+
+        var emptyInfosPratiques;
+        CKEDITOR.on("instanceReady", function(event) {
+            $('#cke_publication_infos_pratiques').addClass('mb-3');
+            if ($('#publication_infos_pratiques').val().length == 0) {
+                emptyInfosPratiques = true;
+                $('#cke_publication_infos_pratiques').hide();
+            }
+        });
+
+        $('#ip-button').click(function(){
+            $('#cke_publication_infos_pratiques').toggle();
+            $('#add-ip-button').toggle();
+            $('#delete-ip-button').toggle();
+            emptyInfosPratiques = !emptyInfosPratiques;
+        });
+
+        $("#submit").click(function() {
+            if (emptyInfosPratiques) {
+                $('#publication_infos_pratiques').remove();
+            }
+            $(this).submit();
+        });
+
+        // input Image de couverture
+        
+        var imgFile = $('#inputImgFileName').data('imgfile').replace(/^(.*?)_/,'');
+        $('#publication_imageFile_file').next().html(imgFile);
+
+        if($('#inputImgFileName').data('imgfile').includes('picsum')) { // à supprimer une fois picsum plus utilisé
+            $(".vich-image a img").attr("src",$('#inputImgFileName').data('imgfile'));
+        }
+
+        $(".vich-image a").removeAttr("href"); // supprime le lien href de vichupload
+
+        $('#publication_imageFile_file').on('change', function(event) {
+            var inputFile = event.currentTarget;
+            if (inputFile.files.length == 1) {
+                $(this).next().html(inputFile.files[0].name);
+            } else if ( inputFile.files.length == 0) {
+                $(this).next().html('<i class="text-muted">Veuillez choisir une image de présentation</i>');
+            }
+        });
+
+        // gestion de la collection d'inputs des liens utiles internes
+
+        $('#add-lien-interne').click(function(){
+            // Je recupere le numero des futurs champs que je vais créer S
+            const index= +$('#widgets-lien-interne-counter').val();
+            // Je récupere le prototype des entrées 
+            const tmpl= $('#publication_liens_utiles_internes').data('prototype').replace(/__name__/g, index);
+            // J'injecte ce code au sein de la div
+            $('#publication_liens_utiles_internes').append(tmpl);
+            $('#widgets-lien-interne-counter').val(index + 1);
+            //Je gère le bouton supprimer
+            handleDeleteButtons();
+            //on ajoute seelctize à l'input
+            addSelectizeLiensUtilesInternes();
+        });
+
+        function updateCounterLiensUtilesInternes() {
+            const count = $('#publication_liens_utiles_internes div.form-group').length;
+            $('#widgets-lien-interne-counter').val(count);
+        }
+        updateCounterLiensUtilesInternes();
+
+        function addSelectizeLiensUtilesInternes() { // On améliore l'input de selection avec selectize
+            $('select.publication_liens_utiles_internes').selectize({
+                render: {
+                    item: function (data, escape) {
+                        if (data.statut == false) {
+                            return "<div class='item text-danger' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + " <i>(non publié ou à la corbeille)</i>" + "</div>"
+                        } else {
+                            return "<div class='item' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + "</div>"
+                        }
+                    },
+                    option: function (data, escape) {
+                        if (data.statut == false) {
+                            return "<div class='option text-danger' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + " <i>(non publié ou à la corbeille)</i>" + "</div>"
+                        } else {
+                            return "<div class='option' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + "</div>"
+                        }
+                    },
+                    optgroup_header: function(item, escape) {
+                        var value;
+                        switch(item.value) {
+                            case 'rubrique': value = "Rubriques"; break;
+                            case 'sous-rubrique' : value = "Sous-rubriques"; break;
+                            case 'actualite': value = "Actualités"; break;
+                            case 'page' : value = "Pages"; break;
+                            case 'evenement': value = "Événements"; break;
+                            default: value = item.value; 
+                        }
+                        return '<div class="optgroup-header font-weight-bold">'+value+'</div>';     
+                    }
+                }
+            });
+        }
+        addSelectizeLiensUtilesInternes();
+
+        // gestion de la collection d'inputs des liens utiles externes
+
+        $('#add-lien-externe').click(function(){
+            // Je recupere le numero des futurs champs que je vais créer S
+            const index= +$('#widgets-lien-externe-counter').val();
+            // Je récupere le prototype des entrées 
+            const tmpl= $('#publication_liens_utiles_externes').data('prototype').replace(/__name__/g, index);
+            // J'injecte ce code au sein de la div
+            $('#publication_liens_utiles_externes').append(tmpl);
+            $('#widgets-lien-externe-counter').val(index + 1);
+            //Je gère le bouton supprimer
+            handleDeleteButtons();
+        });
+
+        function updateCounterLiensUtiles() {
+            const count = $('#publication_liens_utiles_externes div.form-group').length;
+            $('#widgets-lien-externe-counter').val(count);
+        }
+        updateCounterLiensUtiles();
+
+        // gestion de la collection d'inputs des ressources
+
+        $('#publication_ressources input[type="file"]').each(function(index) {
+            if ($(this).data('rscfile') !== undefined) {
+                var imgFile = $(this).data('rscfile').replace(/^(.*?)_/,'');
+                $(this).next().html(imgFile);
+            }
+            $(this).on('change', function(event) {
+                var inputFile = event.currentTarget;
+                if (inputFile.files.length == 1) {
+                    var file = $(this).prop('files');
+                    if ((file[0]['size']>=10000000) || (file[0]['type'] != 'application/pdf')) {
+                        $('#inputFileError_publication_ressources_'+index).html('Attention, fichier non valide ( pdf / < 10mo )');
+                        $('#inputFileError_publication_ressources_'+index).show();
+                        //$('#submit').prop('disabled', true);
+                    } else {
+                        $('#inputFileError_publication_ressources_'+index).html('');
+                        $('#inputFileError_publication_ressources_'+index).hide();
+                        //$('#submit').prop('disabled', false);
+                    }
+                    $(this).next().html(inputFile.files[0].name);
+                } else if ( inputFile.files.length == 0) {
+                    $(this).next().html($(this).data('rscfile'));
+                }
+            });
+        });
+
+        $('#add-ressource').click(function(){
+            // Je recupere le numero des futurs champs que je vais créer S
+            const index= +$('#widgets-ressource-counter').val();
+            // Je récupere le prototype des entrées 
+            const tmpl= $('#publication_ressources').data('prototype').replace(/__name__/g, index);
+            // J'injecte ce code au sein de la div
+            $('#publication_ressources').append(tmpl);
+            $('#widgets-ressource-counter').val(index + 1);
+            //Je gère le bouton supprimer
+            handleDeleteButtons();
+            // Je gère les informations 'string' dans l'input, ainsi que le message de contrainte
+            $('#publication_ressources_'+index+'_urlFile_file').next().html('<i class="text-muted">Veuillez choisir un fichier</i>');
+            $('#publication_ressources_'+index+'_urlFile_file').on('change', function(event) {
+                var inputFile = event.currentTarget;
+                if (inputFile.files.length == 1) {
+                    var file = $(this).prop('files');
+                    if ((file[0]['size']>=10000000) || (file[0]['type'] != 'application/pdf')) {
+                        $('#inputFileError_publication_ressources_'+index).html('Attention, fichier non valide ( pdf / < 10mo )');
+                        $('#inputFileError_publication_ressources_'+index).show();
+                        //$('#submit').prop('disabled', true);
+                    } else {
+                        $('#inputFileError_publication_ressources_'+index).html('');
+                        $('#inputFileError_publication_ressources_'+index).hide();
+                        //$('#submit').prop('disabled', false);
+                    }
+                    $(this).next().html(inputFile.files[0].name);
+                } else if ( inputFile.files.length == 0) {
+                    $(this).next().html('<i class="text-muted">Veuillez choisir un fichier</i>');
+                }
+            });
+        });
+
+        function updateCounterRessources() {
+            const count = $('#publication_ressources div.form-group').length;
+            $('#widgets-ressource-counter').val(count);
+        }
+        updateCounterRessources();
+
+        // on gere le bouton supprimer de chaques inputs lié aux collections
+
+        function handleDeleteButtons() {
+            $('button[data-action="delete"]').click(function(){
+                const target = this.dataset.target;
+                $(target).remove();
+            });
+        }
+        handleDeleteButtons();
+
+        $(document).ready(function() {
+            $('#submit').prop('disabled', false);
+        });
+    </script>
+{% endblock %}

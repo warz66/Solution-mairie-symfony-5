@@ -1,0 +1,15 @@
+{% block _publication_infos_pratiques_widget %}
+    {{ form_widget(form) }}
+    <div>
+        <button type="button" id="ip-button" class="btn btn-primary">
+            <span id="add-ip-button" {% if form.vars.value is not empty %}style="display:none;"{% endif %}>
+                <i class="fas fa-plus"></i>
+                Ajouter des infos pratiques
+            </span>
+            <span id="delete-ip-button" {% if form.vars.value is empty %}style="display:none;"{% endif %}>
+                <i class="fas fa-times"></i>
+                Supprimer les infos pratiques
+            </span>
+        </button>
+    </div>
+{% endblock %}

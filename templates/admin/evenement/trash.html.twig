@@ -1,0 +1,132 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration des événements{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Corbeille des Événements</h1>
+        <table class="table table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="text-center align-middle">Image de couverture</th>
+                    <th class="text-center align-middle">Titre de l'événement</th>
+                    <th class="text-center align-middle">Catégorie</th>
+                    <th class="text-center align-middle">Date de l'événement</th>
+                    <th class="text-center align-middle"><button class="btn btn-outline-primary btnEmptyTrash" title="Vider la corbeille" style="width: 44px;"><i class="fas fa-dumpster-fire"></i></button></th>
+                    <th class="text-center align-middle"><a href="{{ path('admin_evenement_index') }}" class="btn btn-outline-primary" style="width: 44px" title="Retourner à l'index"><i class="fas fa-reply"></i></a></th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for evenement in evenements %}
+                    <tr data-id='{{ evenement.id }}'>
+                        {% if 'picsum' in evenement.coverImage %} {# à virer une fois en prod #}
+                            <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}?trash=true';" class="text-center align-middle" title="Editer">
+                                <img style="max-width:300px;height:auto;" src="{{evenement.coverImage}}" alt="">
+                            </td>
+                        {% else %}
+                            <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}?trash=true';" class="text-center align-middle" title="Editer">
+                                <img src="{{(publication_cover_path ~ evenement.coverImage) | imagine_filter('publication_cover_index_thumb')}}" alt="">
+                            </td>
+                        {% endif %}
+                        <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}?trash=true';" class="align-middle text-center" title="Editer">{{evenement.title}}</td>
+                        <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}?trash=true';" class="align-middle text-center" title="Editer">{{evenement.evenement.category}}</td>
+                        <td onclick="document.location = '{{ path('admin_evenement_edit',{'id': evenement.id }) }}?trash=true';" class="align-middle text-center" title="Editer">
+                            {% if evenement.evenement.statut %}<strong class="text-danger">Annulé</strong><br>{% endif %}
+                            {% if evenement.evenement.finEvenement is null %}
+                                {{evenement.evenement.debutEvenement|date("d/m/y")}}<br><i class="fas fa-long-arrow-alt-down"></i><br>Indéfinie
+                            {% else %}
+                                {{evenement.evenement.debutEvenement|date("d/m/y")}}<br><i class="fas fa-long-arrow-alt-down"></i></i><br>{{evenement.evenement.finEvenement|date("d/m/y")}}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ evenement.id }}' data-title='{{ evenement.title }}' class="btn btn-outline-primary btnDelete" title="Supprimer définitivement" style="width: 44px;"><i class="fas fa-fire-alt"></i></button>
+                        </td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ evenement.id }}' data-title='{{ evenement.title }}' class="btn btn-outline-primary btnRestore" title="Restaurer" style="width: 44px;"><i class="fas fa-trash-restore"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table> 
+        <div class="text-center">
+            {{ knp_pagination_render(evenements) }}
+        </div>    
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+    
+        $('.btnDelete').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir supprimer cette évènement définitivement ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/evenement/'+id+'/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnRestore').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir restaurer cette évènement ? Un contenu restauré est automatiquement en statut dépublié, pensez à le republier si nécessaire.",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/evenement/'+id+'/restore';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnEmptyTrash').click(function(e) {
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir vider la corbeille ? Vous allez supprimer tout son contenu définitivement !",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/evenement/trash/empty';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,23 @@
+ch_cookie_consent:
+    title: 'Ce site web utilise des Cookies.'
+    intro: "Afin de nous aider à améliorer l'expérience globale de notre site web, nous vous prions de bien vouloir consentir aux cookies."
+    read_more: 'En savoir plus à ce sujet'
+    analytics:
+        title: 'Acceptez-vous les cookies Google Analytics ?'
+        description: ''
+    tracking:
+        title: 'Voulez-vous des cookies de suivi?'
+        description: ''
+    marketing:
+        title: 'Voulez-vous des publicités personnalisées?'
+        description: ''
+    social_media:
+        title: 'Voulez-vous des cookies de réseaux sociaux?'
+        description: ''
+    no: 'Non'
+    yes: 'Oui'
+    save: 'Sauvegarder'
+    use_only_functional_cookies: "N'utilisez que des cookies fonctionnels"
+    use_all_cookies: 'Autoriser tous les cookies'
+    show_details: 'Afficher les détails'
+    hide_details: 'Cacher les détails'

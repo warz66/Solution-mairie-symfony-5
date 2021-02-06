@@ -1,0 +1,169 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration des pages{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .editParent:hover {
+            background-color: #c9c9c9;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Corbeille des Pages</h1>
+        <table class="table table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="text-center align-middle">Image de couverture</th>
+                    <th class="text-center align-middle">Titre de la page</th>
+                    <th class="text-center align-middle">Arborescence</th>
+                    <th class="text-center align-middle"><button class="btn btn-outline-primary btnEmptyTrash" title="Vider la corbeille" style="width: 44px;"><i class="fas fa-dumpster-fire"></i></button></th>
+                    <th class="text-center align-middle"><a href="{{ path('admin_page_index') }}" class="btn btn-outline-primary" style="width: 44px" title="Retourner à l'index"><i class="fas fa-reply"></i></a></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for page in pages %}
+                    <tr data-id='{{ page.id }}'>
+                        {% if 'picsum' in page.coverImage %} {# à virer une fois en prod #}
+                            <td onclick="document.location = '{{ path('admin_page_edit',{'id': page.id }) }}?trash=true';" class="text-center align-middle" title="Editer">
+                                <img style="max-width:300px;height:auto;" src="{{page.coverImage}}" alt="">
+                            </td>
+                        {% else %}
+                            <td onclick="document.location = '{{ path('admin_page_edit',{'id': page.id }) }}?trash=true';" class="text-center align-middle" title="Editer">
+                                <img src="{{(publication_cover_path ~ page.coverImage) | imagine_filter('publication_cover_index_thumb')}}" alt="">
+                            </td>
+                        {% endif %}
+                        <td onclick="document.location = '{{ path('admin_page_edit',{'id': page.id }) }}?trash=true';" class="align-middle text-center" title="Editer">{{page.title}}</td>
+
+                        {# arborescence de la page, peut-être le faire dans le controller via un service #}
+                        <td onclick="document.location = '{{ path('admin_page_edit',{'id': page.id }) }}?trash=true';" class="align-middle text-center" title="Editer">
+                            {% if page.parent is not null %}
+                                {% if page.parent.parent is not null %}
+                                    <a href="{{ path('admin_rubrique_edit', {'id': page.parent.parent.id }) }}" title="Editer la rubrique {{page.parent.parent.title}}"><p class="rounded editParent mb-0"><strong>
+                                        {% if page.parent.parent.trash %}
+                                            <span class="text-danger">{{page.parent.parent.title}} (corbeille)</span>
+                                        {% else %}
+                                            {{page.parent.parent.title}}
+                                        {% endif %}
+                                    </strong></p></a>
+                                    <i class="fas fa-sort-amount-down"></i>
+                                    <a href="{{ path('admin_sous-rubrique_edit', {'id': page.parent.id }) }}" title="Editer la sous-rubrique {{page.parent.title}}"><p class="rounded editParent mb-0"><strong>
+                                        {% if page.parent.trash %}
+                                            <span class="text-danger">{{page.parent.title}} (corbeille)</span>
+                                        {% else %}
+                                            {{page.parent.title}}
+                                        {% endif %}
+                                    </strong></p></a>
+                                {% elseif page.parent.category.nom == 'sous-rubrique' and page.parent.parent is null %} 
+                                    <a href="{{ path('admin_sous-rubrique_edit', {'id': page.parent.id }) }}"><p class="rounded editParent mb-0" title="La sous-rubrique n'a pas de rubrique parent"><span class="text-danger"><strong>Arborescence interrompue</strong></span><br><i class="fas fa-sort-amount-down"></i><br><strong>
+                                        {% if page.parent.trash %}
+                                            <span class="text-danger">{{page.parent.title}} (corbeille)</span>
+                                        {% else %}
+                                            {{page.parent.title}}
+                                        {% endif %}
+                                    </strong></p></a>
+                                {% else %}
+                                    <a href="{{ path('admin_rubrique_edit', {'id': page.parent.id }) }}"><p class="rounded editParent mb-0" title="Editer la rubrique {{page.parent.title}}"><strong>
+                                        {% if page.parent.trash %}
+                                            <span class="text-danger">{{page.parent.title}} (corbeille)</span>
+                                        {% else %}
+                                            {{page.parent.title}}
+                                        {% endif %}
+                                    </strong></p></a>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-danger" title="Cette page n'a pas de parent, elle ne sera pas visible"><strong>Pas de parent</strong></span>
+                            {% endif %}
+                        </td>
+
+                        <td class="align-middle text-center">
+                            <button data-id='{{ page.id }}' data-title='{{ page.title }}' class="btn btn-outline-primary btnDelete" title="Supprimer définitivement" style="width: 44px;"><i class="fas fa-fire-alt"></i></button>
+                        </td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ page.id }}' data-title='{{ page.title }}' class="btn btn-outline-primary btnRestore" title="Restaurer" style="width: 44px;"><i class="fas fa-trash-restore"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table> 
+        <div class="text-center">
+            {{ knp_pagination_render(pages) }}
+        </div>    
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+    
+        $('.btnDelete').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir supprimer cette page définitivement ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/page/'+id+'/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnRestore').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir restaurer cette page ? Un contenu restauré est automatiquement en statut dépublié, pensez à le republier si nécessaire.",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/page/'+id+'/restore';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnEmptyTrash').click(function(e) {
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir vider la corbeille ? Vous allez supprimer tout son contenu définitivement !",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/page/trash/empty';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

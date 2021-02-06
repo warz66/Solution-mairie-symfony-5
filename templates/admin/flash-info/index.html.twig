@@ -1,0 +1,115 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration du Flash info{% endblock %}
+
+{% block stylesheets %}
+<style>
+.container {
+    min-width: 90%;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Administration du flash d'informations</h1>
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-10">
+                        <div class="card bg-light bg-white">
+                            <div class="card-header text-center bg-primary">
+                                <h4 class="card-title text-white">
+                                    <i class="fas fa-tasks"></i>
+                                    Emplacement dans le flash d'informations
+                                </h4>
+                            </div>
+                            <div class="card-body"> 
+                                {{ form_start(formFlashInfo) }}
+                                {{ form_widget(formFlashInfo) }}
+                                <div class="d-flex justify-content-center">
+                                    <button id="submit" type="submit" class="btn btn-primary mr-2">
+                                        <span id="b-e-default"><i class="far fa-save"></i></span> 
+                                        <span id="b-e-loading" class="spinner-border spinner-border-sm" style="display:none;" role="status"></span>
+                                        &nbsp;Valider
+                                    </button>
+                                </div>
+                                {{ form_end(formFlashInfo) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 d-lg-flex align-items-center justify-content-center d-none">
+                        <i class="fas fa-arrow-left fa-3x"></i>
+                    </div>
+                    <div class="col-lg-2 d-flex align-items-center justify-content-center d-lg-none m-3">
+                        <i class="fas fa-arrow-up fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <table class="table table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Titre</th>
+                            <th class="text-center align-middle">Information</th>
+                            <th class="text-center align-middle">Lien</th>
+                            <th class="text-center align-middle"><a href="{{ path('admin_flash-info_new') }}" class="btn btn-outline-primary" style="width: 44px" title="Nouvel objet flash info"><i class="fas fa-plus"></i></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for flashInfoObjet in flashInfoObjets %}
+                            <tr data-id='{{ flashInfoObjet.id }}'>
+                                <td onclick="document.location = '{{ path('admin_flash-info_edit',{'id': flashInfoObjet.id }) }}';" class="align-middle text-center" title="Editer">{{flashInfoObjet.title}}</td>
+                                <td onclick="document.location = '{{ path('admin_flash-info_edit',{'id': flashInfoObjet.id }) }}';" class="align-middle text-center" title="Editer">{{flashInfoObjet.information}}</td>
+                                <td onclick="document.location = '{{ path('admin_flash-info_edit',{'id': flashInfoObjet.id }) }}';" class="align-middle text-center" title="Editer">
+                                    {% if flashInfoObjet.choixLien is null %}
+                                        <span>Sans lien</span>
+                                    {% elseif flashInfoObjet.choixLien == 0 %}
+                                        {% if flashInfoObjet.lienInterne is null and flashInfoObjet.choixLien == 0 %}
+                                            <span class="text-danger">Attention, lien interne inexistant !</span>
+                                        {% else %}
+                                            <span>{{flashInfoObjet.lienInterne.title}}</span>
+                                        {% endif %}
+                                    {% elseif flashInfoObjet.choixLien == 1 %}
+                                        <span>{{flashInfoObjet.lienExterne}}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="align-middle text-center">
+                                    <button data-id='{{ flashInfoObjet.id }}' data-title='{{ flashInfoObjet.title }}' class="btn btn-outline-primary btnDelete" title="supprimer" style="width: 44px;"><i class="fas fa-fire-alt"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+        $('.btnDelete').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                message: "Êtes-vous sûr de vouloir supprimer définitivement l'objet flash info <strong>"+$(this).data('title')+"</strong> ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/flash-info/'+id+'/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

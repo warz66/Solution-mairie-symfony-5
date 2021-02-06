@@ -1,0 +1,98 @@
+.container {
+    min-width: 70%;
+}
+
+.custom-file-input {
+    cursor: pointer;
+}
+
+#galerie_order_by {
+    cursor: pointer; 
+}
+
+.vich-image img {
+    margin-top: 30px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    border-radius:0.25rem;
+}
+
+.vich-image a {
+    pointer-events: none;
+    cursor: default;
+}    
+
+legend {
+    padding-top:0 !important;
+}   
+
+/**************** button on off *******************/
+.custom-switch.custom-switch-adaptive {
+    padding-left: 0;
+}
+.custom-switch.custom-switch-adaptive .custom-control-label {
+    padding: 0 1.3em;
+    cursor:pointer;
+    position: relative;
+    border-radius: 1em;
+    line-height: 1.4em;
+    /*color: purple;*/
+    border: 1px solid #e45c27;
+    background-color: #f8f9fa;
+    transition: background-color 200ms;
+}
+.custom-switch.custom-switch-adaptive .custom-control-label::before {
+    content: none;
+}
+.custom-switch.custom-switch-adaptive .custom-control-label::after {
+    position: absolute;
+    background-color: #e45c27;
+    height: 1.2em;
+    top: 0.1em;
+    left: 0.1em;
+    width: 1.2em;
+    border-radius: 1em;
+    transition: left 200ms;
+}
+.custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label {
+    color: #fff;
+    background-color: #e45c27;
+    border-color: #e45c27;
+}
+.custom-switch.custom-switch-adaptive .custom-control-input:checked ~ .custom-control-label::after {
+    background-color: #fff;
+    left: calc(100% - 1.2em);
+    transform: none;
+    -webkit-transform: none;
+}
+/***********************************************/
+
+::-webkit-input-placeholder {
+    font-style: italic;
+}
+:-moz-placeholder {
+    font-style: italic;  
+}
+::-moz-placeholder {
+    font-style: italic;  
+}
+:-ms-input-placeholder {  
+    font-style: italic; 
+}
+
+@media (max-width: 1200px) {
+    .container {
+        min-width: 100%;
+    }
+    .grid-item {
+    width: calc((100% - 30px)/2);
+    }
+}
+
+@media (max-width: 800px) {
+    .grid-item {
+    width: 100%;
+    }
+}

@@ -1,0 +1,83 @@
+    /* mansonry */
+
+    html { 
+        overflow-y: scroll; /* force scrollbar */
+    }
+    .grid {
+        background-color: white;
+    }
+
+    /* clear fix */
+    .grid:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+
+    .grid-item {
+        z-index:0;
+        width: calc((100% - 120px)/4); /* debug gutter */
+        margin-bottom:30px;
+        float: left;
+    }
+
+    .grid-item img {
+        display: block;
+        position: relative;
+        z-index:0;
+        width: 100%;
+    }
+
+    .grid.are-images-unloaded {
+        opacity: 0;
+    }
+
+    .page-load-status {
+        display: none;
+        padding-top: 20px;
+        /*border-top: 1px solid #DDD;*/
+        text-align: center;
+        color: #777;
+    }
+
+    @media (max-width: 992px) {
+        .grid-item {
+        width: calc((100% - 90px)/3); /* a test le -15, normalement -20 ??? */
+        }
+    }
+
+    @media (max-width: 768px) {
+        .grid-item {
+        width: calc((100% - 60px)/2);
+        }
+    }
+
+    @media (max-width: 476px) {
+        .grid-item {
+        width: 100%;
+        }
+    }
+
+    /* kiosque */
+
+    #kiosque a {
+        text-decoration: none;
+        color: inherit;
+    }
+    .revue {
+        background-color: #e9ecef;
+        transition: all 0.3s ease-out;
+        /*border: 1px solid;
+        border-color: #e9ecef !important;*/
+    }
+    .revueTitle {
+        font-weight: bold;
+        text-align: center;
+        padding: 8px;
+        margin:0px;
+    }
+    .revue:hover{
+        background-color: darkgrey !important;  
+        /*border-color: darkgrey !important; */
+        box-shadow: 0px 10px 13px -7px #000000;
+    }

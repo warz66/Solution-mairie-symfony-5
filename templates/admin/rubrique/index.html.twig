@@ -1,0 +1,123 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration des rubriques{% endblock %}
+
+{% block stylesheets %}
+<style>
+.container {
+    min-width: 90%;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Administration du Menu et des Rubriques</h1>
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-lg-10">
+                        <div class="card bg-light bg-white">
+                            <div class="card-header text-center bg-primary">
+                                <h4 class="card-title text-white">
+                                    <i class="fas fa-tasks"></i>
+                                    Emplacement des rubriques dans le menu
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                {{ form_start(form) }} 
+                                {{ form_widget(form) }}
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="d-flex justify-content-center">
+                                            <button id="submit" type="submit" class="btn btn-primary mr-2">
+                                                <span id="b-e-default"><i class="far fa-save"></i></span> 
+                                                <span id="b-e-loading" class="spinner-border spinner-border-sm" style="display:none;" role="status"></span>
+                                                &nbsp;Valider
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 d-lg-flex align-items-center justify-content-center d-none">
+                        <i class="fas fa-arrow-left fa-3x"></i>
+                    </div>
+                    <div class="col-lg-2 d-flex align-items-center justify-content-center d-lg-none m-3">
+                        <i class="fas fa-arrow-up fa-3x"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <table class="table table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Image de couverture</th>
+                            <th class="text-center align-middle">Titre de la rubrique</th>
+                            <th class="text-center align-middle">Introduction</th>
+                            <th class="text-center align-middle"><a href="{{ path('admin_rubrique_new') }}" class="btn btn-outline-primary" style="width: 44px" title="Nouvelle rubrique"><i class="fas fa-plus"></i></a></th>
+                            <th class="text-center align-middle"><a href="{{ path('admin_rubrique_trash_index') }}" class="btn btn-outline-primary" style="width: 44px" title="Voir la corbeille"><i class="fas fa-dumpster"></i></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rubrique in rubriques %}
+                            <tr data-id='{{ rubrique.id }}' {% if rubriquesWithDependencies[rubrique.id] is defined %} data-msgdependencies='{{rubriquesWithDependencies[rubrique.id]}}' {% endif %}>
+                                {% if 'picsum' in rubrique.coverImage %} {# à virer une fois en prod #}
+                                    <td onclick="document.location = '{{ path('admin_rubrique_edit',{'id': rubrique.id }) }}';" class="text-center align-middle" title="Editer">
+                                        <img style="max-width:300px;height:auto;" src="{{rubrique.coverImage}}" alt="">
+                                    </td>
+                                {% else %}
+                                    <td onclick="document.location = '{{ path('admin_rubrique_edit',{'id': rubrique.id }) }}';" class="text-center align-middle" title="Editer">
+                                        <img src="{{(publication_cover_path ~ rubrique.coverImage) | imagine_filter('publication_cover_index_thumb')}}" alt="">
+                                    </td>
+                                {% endif %}
+                                <td onclick="document.location = '{{ path('admin_rubrique_edit',{'id': rubrique.id }) }}';" class="align-middle text-center" title="Editer">{{rubrique.title}}</td>
+                                <td onclick="document.location = '{{ path('admin_rubrique_edit',{'id': rubrique.id }) }}';" class="align-middle text-center" title="Editer">{{rubrique.introduction}}</td>
+                                <td class="align-middle text-center"><a href="{{ path('admin_rubrique_edit',{'id': rubrique.id }) }}" class="btn btn-outline-primary" style="width: 44px" title="Editer la rubrique"><i class="fas fa-edit"></i></a></td>
+                                <td class="align-middle text-center">
+                                    <button data-id='{{ rubrique.id }}' data-title='{{ rubrique.title }}' class="btn btn-outline-primary btnTrash" title="Envoyer à la corbeille" style="width: 44px;"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>   
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+        $('.btnTrash').click(function(e) {
+            var id = $(this).data('id');
+            var msgdependencies = $(this).closest('tr').data('msgdependencies');
+            if (typeof msgdependencies === "undefined") {
+                var msg = "Êtes-vous sûr de vouloir envoyer cette rubrique à la corbeille <strong>"+$(this).data('title')+"</strong>"+" ?";
+            } else {
+                var msg = "Attention, du contenu dépend de cette rubrique :<br>"+msgdependencies+"<br><br>Êtes-vous sûr de vouloir l'envoyer à la corbeille ?"
+            }
+            bootbox.dialog({
+                size: 'lg',
+                message: msg,
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/rubrique/'+id+'/trash';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

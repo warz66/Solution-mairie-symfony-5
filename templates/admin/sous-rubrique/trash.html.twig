@@ -1,0 +1,136 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration des sous-rubriques{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .editParent:hover {
+            background-color: #c9c9c9;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Corbeille des Sous-Rubriques</h1>
+        <table class="table table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="text-center align-middle">Image de couverture</th>
+                    <th class="text-center align-middle">Titre de la sous-rubrique</th>
+                    <th class="text-center align-middle">Rubrique parent</th>
+                    <th class="text-center align-middle"><button class="btn btn-outline-primary btnEmptyTrash" title="Vider la corbeille" style="width: 44px;"><i class="fas fa-dumpster-fire"></i></button></th>
+                    <th class="text-center align-middle"><a href="{{ path('admin_sous-rubrique_index') }}" class="btn btn-outline-primary" style="width: 44px" title="Retourner à l'index"><i class="fas fa-reply"></i></a></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sousRubrique in sousRubriques %}
+                    <tr data-id='{{ sousRubrique.id }}'>
+                        {% if 'picsum' in sousRubrique.coverImage %} {# à virer une fois en prod #}
+                            <td onclick="document.location = '{{ path('admin_sous-rubrique_edit',{'id': sousRubrique.id }) }}?trash=true';" class="text-center align-middle" title="Editer">
+                                <img style="max-width:300px;height:auto;" src="{{sousRubrique.coverImage}}" alt="">
+                            </td>
+                        {% else %}
+                            <td onclick="document.location = '{{ path('admin_sous-rubrique_edit',{'id': sousRubrique.id }) }}?trash=true';" class="text-center align-middle" title="Editer">
+                                <img src="{{(publication_cover_path ~ sousRubrique.coverImage) | imagine_filter('publication_cover_index_thumb')}}" alt="">
+                            </td>
+                        {% endif %}
+                        <td onclick="document.location = '{{ path('admin_sous-rubrique_edit',{'id': sousRubrique.id }) }}?trash=true';" class="align-middle text-center" title="Editer">{{sousRubrique.title}}</td>
+                        <td onclick="document.location = '{{ path('admin_sous-rubrique_edit',{'id': sousRubrique.id }) }}?trash=true';" class="align-middle text-center" title="Editer">
+                            {% if sousRubrique.parent is null %}
+                                <span class="text-danger" title="Cette sous-rubrique n'a pas de parent"><strong>Pas de parent</strong></span>
+                            {% else %}
+                                <a href="{{ path('admin_rubrique_edit', {'id': sousRubrique.parent.id }) }}"><p class="rounded editParent mb-0" title="Editer la rubrique {{sousRubrique.parent.title}}"><strong>
+                                {% if (sousRubrique.parent.trash) %}
+                                    <span class="text-danger">{{sousRubrique.parent.title}} (corbeille)</span>
+                                {% else %}
+                                    {{sousRubrique.parent.title}}
+                                {% endif %}    
+                                </strong></p></a>
+                            {% endif %}
+                        </td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ sousRubrique.id }}' data-title='{{ sousRubrique.title }}' class="btn btn-outline-primary btnDelete" title="Supprimer définitivement" style="width: 44px;"><i class="fas fa-fire-alt"></i></button>
+                        </td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ sousRubrique.id }}' data-title='{{ sousRubrique.title }}' class="btn btn-outline-primary btnRestore" title="Restaurer" style="width: 44px;"><i class="fas fa-trash-restore"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>   
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+        $('.btnDelete').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir supprimer cette sous-rubrique définitivement ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/sous-rubrique/'+id+'/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnRestore').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir restaurer cette sous-rubrique ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/sous-rubrique/'+id+'/restore';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnEmptyTrash').click(function(e) {
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir vider la corbeille ? Vous allez supprimer tout son contenu définitivement !",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/sous-rubrique/trash/empty';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

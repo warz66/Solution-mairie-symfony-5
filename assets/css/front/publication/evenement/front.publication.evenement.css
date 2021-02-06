@@ -1,0 +1,72 @@
+    /* Header publication */ 
+
+    #headerRubrique {
+        position:relative;
+        text-align: center;
+    }
+    #headerRubrique img{
+        width:100%;
+        height: 390px;
+        object-fit: cover;
+    }
+    #headerRubriqueText {
+        position: absolute;
+        width: 75%;
+        top: 93.5%; left: 50%;
+        transform: translate(-50%, 0%);
+        border: solid 1px rgb(15,15,15);
+        font-weight: bold;
+        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        overflow: hidden;
+    }
+    #headerRubriqueText :nth-child(1) {
+        font-size:25px;
+        background-color: rgb(15,15,15);
+        color: rgba(255,255,255,0.95);
+        font-family: 'Nouvelle Vague';
+        padding: 5px;
+    }
+    #headerRubriqueText :nth-child(2) {
+        color: black;
+        padding: 20px 40px;
+        background-color: white;
+    }
+    @media (max-width: 575px) {
+        #headerRubriqueText {
+            width: 90%;    
+        }
+        #headerRubrique {
+            padding:0;
+        }
+    }
+
+    .imgCoverGrayscale {
+        filter: grayscale(1);       
+    }
+
+    /* page contenu */
+
+    #pageContent img{
+        max-width: 100% !important;
+        object-fit: cover !important;
+    }
+
+    #pageExtraInfos a{
+        text-decoration: none;
+        color: black;
+    }
+
+    #pageExtraInfos a:hover{
+        color: #FF5722;
+        transition: color 0.1s;
+    }
+
+    /* evenement */
+
+    .evenementAnnule {
+        padding-top: 10px;
+        color: #C41C00;
+        font-size: 18px;
+        font-weight: bold;
+    }

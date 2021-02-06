@@ -1,0 +1,39 @@
+.container {
+    min-width: 80%;
+}
+
+tbody {
+    cursor:pointer;
+}
+
+#publication_parent {
+    cursor:pointer;
+}
+
+::placeholder {
+    font-style: italic;
+}
+
+h1 {
+    margin: 70px 0 95px 0;
+    font-weight: bold;
+}
+
+table.table {
+    background-color: rgb(240,240,240);
+    border: 1px solid rgb(232,232,232);
+    /*box-shadow: 1px 0px 1px 1px rgb(114, 114, 114, 0.3);*/
+}
+
+table.table td {
+    padding:20px !important;
+}
+
+@media (max-width: 1300px) {
+    .container {
+        min-width: 100%;
+    }
+    table.table td {
+        padding:10px!important;
+    }
+}

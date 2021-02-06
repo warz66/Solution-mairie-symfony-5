@@ -1,0 +1,131 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration des actualités{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Corbeille des Actualités</h1>
+        <table class="table table-hover" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="text-center align-middle">Image de couverture</th>
+                    <th class="text-center align-middle">Titre de l'actualité</th>
+                    <th class="text-center align-middle">Catégorie</th>
+                    <th class="text-center align-middle">Période de publication</th>
+                    <th class="text-center align-middle"><button class="btn btn-outline-primary btnEmptyTrash" title="Vider la corbeille" style="width: 44px;"><i class="fas fa-dumpster-fire"></i></button></th>
+                    <th class="text-center align-middle"><a href="{{ path('admin_actualite_index') }}" class="btn btn-outline-primary" style="width: 44px" title="Retourner à l'index"><i class="fas fa-reply"></i></a></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for actualite in actualites %}
+                    <tr data-id='{{ actualite.id }}'>
+                        {% if 'picsum' in actualite.coverImage %} {# à virer une fois en prod #}
+                            <td onclick="document.location = '{{ path('admin_actualite_edit',{'id': actualite.id }) }}?trash=true';" class="text-center align-middle" title="Editer">
+                                <img style="max-width:300px;height:auto;" src="{{actualite.coverImage}}" alt="">
+                            </td>
+                        {% else %}
+                            <td onclick="document.location = '{{ path('admin_actualite_edit',{'id': actualite.id }) }}?trash=true';" class="text-center align-middle" title="Editer">
+                                <img src="{{(publication_cover_path ~ actualite.coverImage) | imagine_filter('publication_cover_index_thumb')}}" alt="">
+                            </td>
+                        {% endif %}
+                        <td onclick="document.location = '{{ path('admin_actualite_edit',{'id': actualite.id }) }}?trash=true';" class="align-middle text-center" title="Editer">{{actualite.title}}</td>
+                        <td onclick="document.location = '{{ path('admin_actualite_edit',{'id': actualite.id }) }}?trash=true';" class="align-middle text-center" title="Editer">{{actualite.actualite.category}}</td>
+                        <td onclick="document.location = '{{ path('admin_actualite_edit',{'id': actualite.id }) }}?trash=true';" class="align-middle text-center" title="Editer">
+                            {% if actualite.actualite.finPublication is null %}
+                                {{actualite.actualite.debutPublication|date("d/m/y")}}<br><i class="fas fa-long-arrow-alt-down"></i><br>Indéfinie
+                            {% else %}
+                                {{actualite.actualite.debutPublication|date("d/m/y")}}<br><i class="fas fa-long-arrow-alt-down"></i></i><br>{{actualite.actualite.finPublication|date("d/m/y")}}
+                            {% endif %}
+                        </td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ actualite.id }}' data-title='{{ actualite.title }}' class="btn btn-outline-primary btnDelete" title="Supprimer définitivement" style="width: 44px;"><i class="fas fa-fire-alt"></i></button>
+                        </td>
+                        <td class="align-middle text-center">
+                            <button data-id='{{ actualite.id }}' data-title='{{ actualite.title }}' class="btn btn-outline-primary btnRestore" title="Restaurer" style="width: 44px;"><i class="fas fa-trash-restore"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table> 
+        <div class="text-center">
+            {{ knp_pagination_render(actualites) }}
+        </div>    
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/js/bootbox.min.js"></script>
+    <script>
+    
+        $('.btnDelete').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir supprimer cette actualité définitivement ?",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/actualite/'+id+'/delete';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnRestore').click(function(e) {
+            var id = $(this).data('id');
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir restaurer cette actualité ? Un contenu restauré est automatiquement en statut dépublié, pensez à le republier si nécessaire.",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/actualite/'+id+'/restore';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.btnEmptyTrash').click(function(e) {
+            bootbox.dialog({
+                size: 'lg',
+                message: "Êtes-vous sûr de vouloir vider la corbeille ? Vous allez supprimer tout son contenu définitivement !",
+                buttons: {
+                    annuler: {
+                        label: 'Annuler',
+                        className: 'btn-secondary',
+                    },
+                    valider: {
+                        label: 'Valider',
+                        className: 'btn-danger',
+                        callback: function(result){
+                            if (result) {
+                                window.location = '/admin/actualite/trash/empty';
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

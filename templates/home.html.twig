@@ -1,0 +1,253 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.home.app') }}
+{#<link rel="stylesheet" type="text/css" href="/css/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="/css/slick/slick-theme.css"/>#}
+
+{% endblock %}
+{% set altTitleImgCarrousel = "" %}
+{% set colorItemsAccesRapide = ['#FF5722', '#3E2723', '#C41C00', '#FFAB40', '#775447', '#FF5722', '#3E2723', '#C41C00', '#FFAB40', '#775447'] %}
+{% block body %}
+
+    {% for label, messages in app.flashes %}
+        <div class="container-fluid container-xl mt-5">
+            <div class="alert alert-{{label}}">
+                {% for message in messages %}
+                    <p>{{ message | raw }}</p>
+                {% endfor %}
+            </div>    
+        </div>
+    {% endfor %}
+
+    <div class="container-fluid mb-5 p-0" id="carousel">
+        {% if carrousel is not null %}
+            <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    {% for  i in 0.. carrousel|length -1 %} 
+                        <li data-target="#carouselIndicators" data-slide-to="{{i}}" {% if loop.first %} class="active" {% endif %}></li>
+                    {% endfor %}
+                </ol>
+                <div class="carousel-inner">
+                    {% for item in carrousel %}
+                        {% set altTitleImgCarrousel = "" %}
+                        {% if 'picsum' in item.coverImage %}
+                            <div class="carousel-item {% if loop.first %} active {% endif %}">
+                                {% if item.lien is not null %}<a href="{{item.lien}}">{% endif %}
+                                    <div class="carrousel-info">
+                                        {% set altTitleImgCarrousel = item.title %}
+                                        <div class="carousel-border">
+                                            <p class="titleItemCarousel">{{item.title}}</p>
+                                            <p class="informationItemCarousel">{{item.introduction}}</p>
+                                        </div>
+                                    </div>
+                                {% if item.lien is not null %}</a>{% endif %}
+                                <div class="text-center">
+                                    {% if item.lien is not null %}<a href="{{item.lien}}">{% endif %}
+                                        <img alt="{{altTitleImgCarrousel}}" src="{{item.coverImage}}">
+                                    {% if item.lien is not null %}</a>{% endif %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="carousel-item {% if loop.first %} active {% endif %}">
+                                {% if item.title is not empty or item.introduction is not empty %}
+                                    {% if item.lien is not null %}<a href="{{item.lien}}">{% endif %}
+                                        <div class="carrousel-info">
+                                            <div class="carousel-border">
+                                                {% if item.title is not empty %}
+                                                    {% set altTitleImgCarrousel = item.title %}
+                                                    <p class="titleItemCarousel">{{item.title}}</p>
+                                                {% endif %}
+                                                {% if item.introduction is not empty %}
+                                                    <p class="informationItemCarousel">{{item.introduction}}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% if item.lien is not null %}</a>{% endif %}
+                                {% endif %}
+                                <div class="text-center">
+                                    {% if item.lien is not null %}<a href="{{item.lien}}">{% endif %}
+                                        {% if item.coverImagePublication %}
+                                            <img alt="{{altTitleImgCarrousel}}" src="{{(publication_cover_path ~ item.coverImage) | imagine_filter('carrousel_home')}}">
+                                        {% else %}
+                                            <img alt="{{altTitleImgCarrousel}}" src="{{(carrousel_cover_path ~ item.coverImage) | imagine_filter('carrousel_home')}}">
+                                        {% endif %}
+                                    {% if item.lien is not null %}</a>{% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if flashInfoItems is not null %}
+        <div id="flashInfoBanniere">
+            <div id="divTitreFlashInfo">
+                FLASH INFO
+            </div>
+        </div>
+
+        <div class="container-fluid container-xl pd-0 mb-5" id="itemsFlashInfo">
+            <div>
+                {% for flashInfoItem in flashInfoItems %}
+                    {% if flashInfoItem.choixLien is null %}
+                        <span>{{flashInfoItem.title|upper}}:&nbsp;&nbsp;{{flashInfoItem.information|capitalize}}</span>
+                    {% elseif flashInfoItem.choixLien == 0 %}
+                        {% if flashInfoItem.lienInterne is null and flashInfoItem.choixLien == 0 %}
+                            <span>{{flashInfoItem.title|upper}}:&nbsp;&nbsp;{{flashInfoItem.information|capitalize}}</span>
+                        {% else %}
+                            <a href="{{ path('publication_router', {'slug' : flashInfoItem.lienInterne.slug}) }}"> {# path() #}
+                                <span>{{flashInfoItem.title|upper}}:&nbsp;&nbsp;{{flashInfoItem.information|capitalize}}</span>
+                            </a>
+                        {% endif %}
+                    {% elseif flashInfoItem.choixLien == 1 %}
+                        <a href="{{flashInfoItem.lienExterne}}">
+                            <span>{{flashInfoItem.title|upper}}:&nbsp;&nbsp;{{flashInfoItem.information|capitalize}}</span>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}   
+
+    {% if accesRapideItems is not null %}
+        <div class="container-fluid container-xl mb-5 position-relative">
+            <div class="traitSlider"></div>
+            <div class="titreSlider">
+                ACCES RAPIDE
+            </div>
+            <section class="sliderAccesRapide">
+                {% for key, accesRapideItem in accesRapideItems %}
+                    <div class="divItemSlider">
+                        <div class="divCercle">
+                            <div class="cercle" style="background-color:{{colorItemsAccesRapide[key]}}">
+                                <a href="{{ path('publication_router', {'slug':accesRapideItem.lienPublication.slug}) }}" aria-label="{{accesRapideItem.title}}">
+                                    <div class="w-100 h-100">  
+                                        <i class="{{accesRapideItem.icone}} fa-2x fasObjetSlider"></i>
+                                    </div>  
+                                </a>
+                            </div>
+                        </div>
+                        <div class="accesRapideObjetText">
+                            <a href="{{ path('publication_router', {'slug':accesRapideItem.lienPublication.slug}) }}" style="color:{{colorItemsAccesRapide[key]}}">{{accesRapideItem.title}}</a>
+                        </div> 
+                    </div>
+                {% endfor %}
+            </section>
+            <div class="traitSlider"></div>
+        </div>
+    {% endif %}
+
+    {% if news is not empty %}
+        <div id="actualiteBanniere">
+            <div id="divTitreActualite">
+                ACTUALITES
+            </div>
+        </div>
+
+        <div class="container-fluid container-xl my-5">
+            <div class="row">
+                {% for key, new in news  %}
+                    <div class="col-sm-6 col-lg-4 actualite">
+                        <a href="{{ path('publication_router', {'slug' : new.slug}) }}">
+                            <div class="card">
+                                {% if 'picsum' in new.coverImage %} {# à virer une fois en prod #}
+                                    <img src="{{new.coverImage}}" alt="{{new.title}}" class="card-img-top">
+                                {% else %}
+                                    <img src="{{(publication_cover_path ~ new.coverImage) | imagine_filter('publication_thumb')}}" alt="{{new.title}}" class="card-img-top">
+                                {% endif %}
+                                <div class="categoryActualite">
+                                    <span {% if colorItemsActualiteCategory[new.actualite.category] is defined %} style="color: {{colorItemsActualiteCategory[new.actualite.category]}};" {% endif %}>{{new.actualite.category}}</span>
+                                </div>
+                                <span class="card-text py-1"><i>Publié le {{new.actualite.debutPublication|date('d/m/y')}}</i></span>
+                                <div class="card-body p-1">
+                                    <h5 class="card-title">{{new.title}}</h5>
+                                    <p class="card-text">{{new.introduction}}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>    
+                {% endfor %}
+            </div>
+            <div id="moreActualite" >
+                <a href="{{path('actualites')}}">Voir toutes l'actualités</a>
+            </div>
+        </div>
+    {% endif %}
+
+    <div id="evenementBanniere">
+        <div id="divTitreEvenement">
+            EVENEMENTS
+        </div>
+    </div>
+
+    <div class="container-fluid container-xl my-5">
+        <div class="row">
+            {% for key, event in events  %}
+                <div class="col-sm-6 col-lg-4 evenement">
+                    <a href="{{ path('publication_router', {'slug' : event.slug}) }}">
+                        <div class="card">
+                            {% if 'picsum' in event.coverImage %} {# à virer une fois en prod #}
+                                <img src="{{event.coverImage}}" alt="{{event.title}}" class="card-img-top">
+                            {% else %}
+                                <img src="{{(publication_cover_path ~ event.coverImage) | imagine_filter('publication_thumb')}}" alt="{{event.title}}" class="card-img-top">
+                            {% endif %}
+                            <div class="categoryEvenement">
+                                <span {% if colorItemsEvenementCategory[event.evenement.category] is defined %} style="color: {{colorItemsEvenementCategory[event.evenement.category]}};" {% endif %}>{{event.evenement.category}}</span>
+                            </div>
+                            {% if event.evenement.statut == 1 %}<span class="evenementAnnule"> Attention, Evénement Annulé ! </span> {% endif %}
+                            <div class="card-body p-1">
+                                <h5 class="card-title">{{event.title}}</h5>
+                                <p class="card-text"><i>{{event.evenement.subtitle}}</i></p>
+                                <p class="card-text">{{event.introduction}}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>    
+            {% endfor %}
+        </div>
+        <div id="moreEvenement">
+            <a href="{{path('evenements')}}">Voir tous les évènements</a>
+        </div>
+    </div>
+
+    {% if kiosqueObjets is not null %}
+        <div class="container-fluid container-xl mb-5 position-relative">
+            <div class="traitSlider"></div>
+            <div class="titreSlider">
+                KIOSQUE   
+            </div>
+            <section class="sliderKiosque">
+                {% for kiosqueObjet in kiosqueObjets %}
+                    <div class="divItemSlider align-middle">
+                        <div class="revue">
+                            <a href="{{ vich_uploader_asset(kiosqueObjet, 'urlFile') }}" target="_blank" title="{{kiosqueObjet.url}}">
+                                <img src="{{ (kiosque_thumbnails_path ~ kiosqueObjet.urlThumbnail)  | imagine_filter('kiosque_home_thumb')}}" alt="{{kiosqueObjet.title}}">
+                                <p class="revueTitle">
+                                    {{kiosqueObjet.title}}<br>{{ vich_uploader_asset(kiosqueObjet, 'urlFile') | filesize }}
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </section>
+            <div class="traitSlider mb-5"></div>
+            <div id="moreKiosque">
+                <a href="{{path('kiosque')}}">Voir toutes les revues du kiosque</a>
+            </div>
+        </div>
+    {% endif %}
+
+    <hr>
+
+{% endblock %}
+
+{% block javascripts %}
+    {#<script type="text/javascript" src="/js/jquery-migrate-1.4.1.min.js"></script>#}
+    {#<script type="text/javascript" src="/js/slick.min.js"></script>#}
+    {#{{ encore_entry_script_tags('js/front.home.app') }}#}
+{% endblock %}

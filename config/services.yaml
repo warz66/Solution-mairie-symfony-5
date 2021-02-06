@@ -1,0 +1,104 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    galerie_content_path: '/img/indatabase/galerie/content/'
+    galerie_cover_path: '/img/indatabase/galerie/cover/'
+    publication_content_path: '/img/indatabase/publication/content/'
+    publication_cover_path: '/img/indatabase/publication/cover/'
+    #carrousel_content_path: '/img/indatabase/carrousel/content/'
+    carrousel_cover_path: '/img/indatabase/carrousel/cover/'
+    ressources_path: '/rsc/indatabase/ressource/'
+    kiosque_path: '/rsc/indatabase/kiosque/'
+    kiosque_thumbnails_path: '/rsc/indatabase/kiosque/thumbnails/'
+    contact_mail_reception: '%env(CONTACT_MAIL_RECEPTION)%'
+    adresse_email_serveur: '%env(SERVEUR_MAIL)%'
+    nom_mairie: '%env(NOM_MAIRIE)%'
+    google_recaptcha_secret: '%env(GOOGLE_RECAPTCHA_SECRET)%'
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+    google_recaptcha_v2_secret: '%env(GOOGLE_RECAPTCHA_V2_SECRET)%'
+    mailchimp_api_key: '%env(MAILCHIMP_API_KEY)%'
+    mailchimp_list_id: '%env(MAILCHIMP_LIST_ID)%'
+    mailchimp_url: '%env(MAILCHIMP_URL)%'
+    google_analytics_view_id: '%env(GOOGLE_ANALYTICS_VIEW_ID)%'
+    google_service_account_key_file: '%env(GOOGLE_SERVICE_ACCOUNT_KEY_FILE)%'
+    google_analytics_results_json_file: '/public/rsc/json/gaResults.json'
+    google_analytics_url: '%env(GOOGLE_ANALYTICS_URL)%'
+    
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments'] 
+    
+    App\EventListener\PublicationCascadeRemoveDependenciesLiensInternesListener:
+        tags:
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'preRemove'
+                entity: 'App\Entity\Publication'
+
+    App\EventListener\VichImgRemoveInDBCarrousel:
+        tags:
+            - { name: kernel.event_listener, event: vich_uploader.post_remove }
+
+    App\EventListener\VichRemoveCacheListener:
+        tags:
+            - { name: kernel.event_listener, event: vich_uploader.pre_remove }
+    
+    App\EventListener\DeleteFileListener:
+        tags:
+            -
+                # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'postRemove'
+                entity: 'App\Entity\Image'
+
+                # set the 'lazy' option to TRUE to only instantiate listeners when they are used
+                lazy: true
+    
+    App\EventListener\ElasticsearchCrudListener:
+        tags:
+            -
+                # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'postRemove'
+                entity: 'App\Entity\Publication'
+            -
+                # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'preRemove'
+                entity: 'App\Entity\Publication'
+            -
+                # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'postUpdate'
+                entity: 'App\Entity\Publication'        
+            -
+                # these are the basic options that define the entity listener
+                name: 'doctrine.orm.entity_listener'
+                event: 'postPersist'
+                entity: 'App\Entity\Publication'
+
+                # set the 'lazy' option to TRUE to only instantiate listeners when they are used
+                lazy: true   
+                
+    App\Twig\TwigExtension:
+        tags: ["twig.extension"]
+                 
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

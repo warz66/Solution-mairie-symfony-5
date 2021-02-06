@@ -1,0 +1,166 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Informations Mairie{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="/css/bootstrap-iconpicker.min.css"/>
+<style>
+    .table-icons .btn {
+        min-height: 50px;
+        min-width: 55px; 
+    }
+    
+    .popover .search-control {
+        min-width:100% !important;
+    }
+
+    .iconpicker {
+        border-color: #ced4da !important;
+    }
+
+    .table-icons i{
+        font-size: 30px;
+    }
+</style>
+{% endblock %}
+
+{% form_theme form 'admin/information/_collectionReseauSocial.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Informations Mairie</h1>
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-lg-6">
+                {{form_row(form.adresse)}}
+                {{form_row(form.cp)}}
+                {{form_row(form.ville)}}
+                {{form_row(form.telephone)}}
+                {{form_row(form.horaire)}}
+            </div>
+            <div class="col-lg-6">
+                {{form_row(form.complement)}}
+                {{form_row(form.reseaux_sociaux)}}
+            </div>
+        </div>
+        <div class="row my-5">
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <button id="submit" type="submit" class="btn btn-primary mr-2">
+                        <span id="b-e-default"><i class="far fa-save"></i></span> 
+                        <span id="b-e-loading" class="spinner-border spinner-border-sm" style="display:none;" role="status"></span>
+                        &nbsp;Enregistrer les modifications
+                    </button>
+                    <a href="{{ path('admin_information_edit') }}" class="btn btn-danger ml-2" id="cancel">
+                        <i class="fas fa-undo-alt"></i>&nbsp;&nbsp;Annuler les modifications
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script src="/js/bootstrap-iconpicker.bundle.min.js"></script>
+<script>
+
+        // gestion de la collection d'inputs des reseaux sociaux
+
+        $('#add-reseau-social').click(function(){
+            // Je recupere le numero des futurs champs que je vais créer S
+            const index= +$('#widgets-reseau-social-counter').val();
+            // Je récupere le prototype des entrées 
+            const tmpl= $('#information_reseaux_sociaux').data('prototype').replace(/__name__/g, index);
+            // J'injecte ce code au sein de la div
+            $('#information_reseaux_sociaux').append(tmpl);
+            $('#widgets-reseau-social-counter').val(index + 1);
+            //Je gère le bouton supprimer
+            handleDeleteButtons();
+            //on ajoute iconpicker à l'input
+            addIconpicker(index);
+        });
+
+        function updateCounterReseauxSociaux() {
+            const count = $('#information_reseaux_sociaux div.form-group').length;
+            $('#widgets-reseau-social-counter').val(count);
+        }
+        updateCounterReseauxSociaux();
+
+        // on gere le bouton supprimer de chaques inputs lié aux collections
+
+        function handleDeleteButtons() {
+            $('button[data-action="delete"]').click(function(){
+                const target = this.dataset.target;
+                $(target).remove();
+            });
+        }
+        handleDeleteButtons();
+
+        // function qui permet de lier iconpicker à l'input icone lors de l'ajout d'un reseau social
+
+        function addIconpicker(index) {
+            $('#information_reseaux_sociaux_'+index).iconpicker({
+                align: 'center',
+                cols: 8,
+                rows: 5,
+                /*iconset:  {
+                        //iconClass: 'fab',
+                        //iconClassFix: 'fa-',
+                        icons: [
+                            'fab fa-facebook-f',
+                        ]
+                    },*/
+                selectedClass: 'btn-primary',
+                unselectedClass: '',
+                searchText: 'Choisissez une icône.',
+            });
+
+            $('#information_reseaux_sociaux_'+index).on('change', function(e) {
+                if (e.icon === 'empty') {
+                    $('#information_reseaux_sociaux_'+index+'_icone').val('');
+                } else {
+                    $('#information_reseaux_sociaux_'+index+'_icone').val(e.icon)
+                }
+            });
+
+            $('#information_reseaux_sociaux_'+index).click(function() { // permet de desactiver l'autocapitalize sur mobile.
+                $('.popover-body input[type=text]').attr('autocapitalize', 'off');
+            });   
+        }
+
+        // on initialise iconpicker pour chaque input de son reseau social respectif 
+        
+        function initIconPickerReseauxSociaux() {
+            var nbReseauxSociaux = $('#widgets-reseau-social-counter').val();
+            if (nbReseauxSociaux > 0) {
+                for (let i=0;i<=nbReseauxSociaux;i++) {
+                    $('#information_reseaux_sociaux_'+i).iconpicker({
+                        align: 'center',
+                        cols: 8,
+                        rows: 5,
+                        icon: $('#information_reseaux_sociaux_'+i+'_icone').val(),
+                        selectedClass: 'btn-primary',
+                        unselectedClass: '',
+                        searchText: 'Choisissez une icône.'
+                    });
+
+                    $('#information_reseaux_sociaux_'+i).on('change', function(e) {
+                        if (e.icon === 'empty') {
+                            $('#information_reseaux_sociaux_'+i+'_icone').val('');
+                        } else {
+                            $('#information_reseaux_sociaux_'+i+'_icone').val(e.icon)
+                        }
+                    });
+
+                    $('#information_reseaux_sociaux_'+i).click(function() { // permet de desactiver l'autocapitalize sur mobile.
+                        $('.popover-body input[type=text]').attr('autocapitalize', 'off');
+                    });    
+                }
+            }
+        }
+        initIconPickerReseauxSociaux();
+
+</script>
+{% endblock %}

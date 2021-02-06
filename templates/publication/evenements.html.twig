@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evènements | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.publication.evenements') }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid container-xl mb-4" id="actusEventsPresentation">
+        <img src="/img/rsc/evenementsCover.jpg" alt="Image de couverture des evenements de la mairie de {{nom_mairie}}"
+            {% if app.request.attributes.get('_route') == 'evenements_passes' %}
+                class="imgCoverGrayscale"
+            {% endif %}
+        >
+    </div>
+
+    <div class="container-fluid container-xl mb-4">    
+        <div class="row">
+            <div class="col">
+                <div id="filAriane">
+                    <nav aria-label="breadcrumb">
+                        <ul class="breadcrumb mb-2">
+                            <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                            {% if past == false %}
+                                <li class="breadcrumb-item active">Tous les évènements</li>
+                            {% else %}
+                                <li class="breadcrumb-item active">Tous les évènements passés</li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            {% if pastExist == true %}
+                <div class="col">
+                    {% if past == false %}
+                        <div id="pastEvents"><a href="{{ path('evenements_passes') }}">Voir l'historique des événements passés</a></div>
+                    {% else %}
+                        <div id="pastEvents"><a href="{{ path('evenements') }}">Retour sur les événements futurs</a></div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+        
+    <div class="container-fluid container-xl" id="actusEventsBanniere">
+        <div id="divCercleBanniere">
+            <div id="cutCercle"></div>
+            <div id="cercle0Banniere"></div>
+            <div id="cercle1Banniere"></div>
+            <div id="cercle2Banniere"></div>
+        </div>
+        <div id="divTitreActualites">
+            EVENEMENTS
+        </div>
+    </div>
+
+        <div class="container-fluid container-xl my-5 position-relative" style="z-index:2;">
+        <div class="row">
+            {% for key, event in events  %}
+                <div class="col-sm-6 col-lg-4 evenement">
+                    <a href="{{ path('publication_router', {'slug' : event.slug}) }}">
+                        <div class="card">
+                            {% if 'picsum' in event.coverImage %} {# à virer une fois en prod #}
+                                <img src="{{event.coverImage}}" alt="{{event.title}}" class="card-img-top {% if past == true %} imgCoverGrayscale {% endif %}">
+                            {% else %}
+                                <img src="{{(publication_cover_path ~ event.coverImage) | imagine_filter('publication_thumb')}}" alt="{{event.title}}" class="card-img-top {% if past == true %} imgCoverGrayscale {% endif %}">
+                            {% endif %}
+                            <div class="categoryEvenement">
+                                <span {% if colorItemsEvenementCategory[event.evenement.category] is defined %} style="color: {{colorItemsEvenementCategory[event.evenement.category]}};" {% endif %}>{{event.evenement.category}}</span>
+                            </div>
+                            {% if event.evenement.statut == 1 %}<span class="evenementAnnule"> Attention, Evénement Annulé ! </span> {% endif %}
+                            <div class="card-body p-1">
+                                <h5 class="card-title">{{event.title}}</h5>
+                                <p class="card-text"><i>{{event.evenement.subtitle}}</i></p>
+                                <p class="card-text">{{event.introduction}}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>    
+            {% endfor %}
+        </div>
+        {{ knp_pagination_render(events) }}
+    </div>
+
+    <hr>
+
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Edition d'un flash d'information{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css">
+<style>
+    .selectize-dropdown-content {
+        cursor:pointer;
+    }
+
+    .selectize-dropdown .optgroup-header {
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+    }
+
+    .selectize-dropdown .optgroup .option {
+        padding-left: 20px;
+    }
+
+    .selectize-input {
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .selectize-input.focus{  
+        border-color: #f4ad94;
+        outline:0;
+        box-shadow: 0 0 0 0.2rem rgba(233, 84, 32, 0.25);
+    }
+
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">Édition du flash d'information {{form.vars.value.title}}</h1>
+        {{ form_start(form) }}
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                {{form_row(form.title)}}
+                {{form_row(form.information)}}
+                {{form_row(form.choix_lien)}}
+                {{form_row(form.lien_interne)}}
+                {{form_row(form.lien_externe)}}
+            </div>  
+        </div>
+        <div class="row my-5">
+            <div class="col">
+                <div class="d-flex justify-content-center">
+                    <button id="submit" type="submit" class="btn btn-primary mr-2">
+                        <span id="b-e-default"><i class="far fa-save"></i></span> 
+                        <span id="b-e-loading" class="spinner-border spinner-border-sm" style="display:none;" role="status"></span>
+                        &nbsp;Enregistrer les modifications
+                    </button>
+                    <a href="{{ path('admin_flash-info_index') }}" class="btn btn-danger ml-2" id="cancel">
+                        <i class="fas fa-undo-alt"></i>&nbsp;&nbsp;Annuler les modifications
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
+    <script>
+
+        // gestion du lien
+
+        function gestionShowLien () {
+            if ($("select#flash_info_objet_choix_lien").val() == 0) {
+                $(".selectize-control").hide();
+                $("#flash_info_objet_lien_interne-selectized").prop('required', false);
+                $("#flash_info_objet_lien_externe").hide();
+                $("#flash_info_objet_lien_externe").prop('required', false);
+            } else if ($("select#flash_info_objet_choix_lien").val() == 1) {
+                $(".selectize-control").hide();
+                $("#flash_info_objet_lien_interne-selectized").prop('required', false);
+                $("#flash_info_objet_lien_externe").show();
+                $("#flash_info_objet_lien_externe").prop('required', true);
+            } else if ($("select#flash_info_objet_choix_lien").val() == 2) {
+                $(".selectize-control").show();
+                if ($("#flash_info_objet_lien_interne").val() == '') { // gère un effet indésirable lors de la soumission du formulaire (l'input s'ouvre), bricolage, à corriger ultérieurement 
+                    $("#flash_info_objet_lien_interne-selectized").prop('required', true);
+                }
+                $("#flash_info_objet_lien_externe").hide();
+                $("#flash_info_objet_lien_externe").prop('required', false);
+            }    
+        }
+
+        $("select#flash_info_objet_choix_lien").change(function() {
+            gestionShowLien();
+        });
+
+        // gestion du lien interne avec selectize
+        
+        $('select#flash_info_objet_lien_interne').selectize({
+            render: {
+                item: function (data, escape) {
+                    if (data.statut == false) {
+                        return "<div class='item text-danger' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + " <i>(non publié ou à la corbeille)</i>" + "</div>"
+                    } else {
+                        return "<div class='item' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + "</div>"
+                    }
+                },
+                option: function (data, escape) {
+                    if (data.statut == false) {
+                        return "<div class='option text-danger' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + " <i>(non publié ou à la corbeille)</i>" + "</div>"
+                    } else {
+                        return "<div class='option' data-statut='" + escape(data.statut) + "'>" + escape(data.text) + "</div>"
+                    }
+                },
+                optgroup_header: function(item, escape) {
+                    let value;
+                    switch(item.value) {
+                        case 'actualite': value = "Actualités"; break;
+                        case 'page' : value = "Pages"; break;
+                        case 'evenement': value = "Événements"; break;
+                        default: value = item.value; 
+                    }
+                    return '<div class="optgroup-header font-weight-bold">'+value+'</div>';     
+                }
+            }
+        });
+
+        $(document).ready(function() {
+            $('#submit').prop('disabled', false);
+            gestionShowLien();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kiosque | Ville de {{nom_mairie}}{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('css/front.kiosque') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid container-xl mt-5" id="filAriane">
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item active">Kiosque</li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container-fluid container-xl" id="kiosque">
+        <div class="row">
+            <div class="col">
+                <div class="grid are-images-unloaded">
+                    {% for kiosqueObjet in kiosqueObjets  %}
+                        <div class="grid-item">
+                            <div class="revue">
+                                <a href="{{ vich_uploader_asset(kiosqueObjet, 'urlFile') }}" target="_blank" title="{{kiosqueObjet.url}}">
+                                    <img src="{{ (kiosque_thumbnails_path ~ kiosqueObjet.urlThumbnail)  | imagine_filter('kiosque_home_thumb')}}" alt="{{kiosqueObjet.title}}">
+                                    <p class="revueTitle">
+                                        {{kiosqueObjet.title}}<br>{{ vich_uploader_asset(kiosqueObjet, 'urlFile') | filesize }}
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="page-load-status">
+                    <div class="loader-ellips infinite-scroll-request">
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="sr-only">Chargement...</span>
+                        </div>
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="sr-only">Chargement...</span>
+                        </div>
+                        <div class="spinner-grow text-secondary" role="status">
+                            <span class="sr-only">Chargement...</span>
+                        </div>            
+                    </div>
+                    <p class="infinite-scroll-last">Fin du kiosque</p>
+                    <p class="infinite-scroll-error">Plus de pages à charger</p>
+                    <input id="pageMax" type="hidden" value="{{ pageMax }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ encore_entry_script_tags('js/front.kiosque.app') }}
+{% endblock %}
